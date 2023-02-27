@@ -35,11 +35,23 @@ export const AccountModel = DbService.sequelize.define(
       allowNull: false,
     },
     roles: {
-      type: DataTypes.JSON,
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     timestamps: false,
+  },
+  {
+    indexes: [
+      {
+        fields: ['email'],
+        unique: true,
+      },
+      {
+        fields: ['phone_number'],
+        unique: true,
+      },
+    ],
   }
 );

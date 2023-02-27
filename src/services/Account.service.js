@@ -1,5 +1,5 @@
-import { AccountModel } from "../models/Account.model.js";
-import { DbService } from "./DbService.js";
+import { AccountModel } from '../models/account.model.js';
+import { DbService } from './DbService.js';
 
 export class AccountService {
   static async createAccount(account) {
@@ -7,12 +7,10 @@ export class AccountService {
   }
 
   static async getAccountByUsername(username) {
-
     return await AccountModel.findOne({
       where: {
-        username: username
-      }
+        username: username,
+      },
     });
-
   }
 }

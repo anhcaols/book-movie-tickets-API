@@ -26,7 +26,7 @@ export class WebService {
 
     this.app.use(mainRouter);
     this.app.use((err, req, res, next) => {
-      // Theem bat loi tai day
+      // Them bat loi tai day
       console.log(err);
       if (err instanceof ApiError) {
         res.status(err.statusCode).json({ message: err.message });
@@ -39,7 +39,7 @@ export class WebService {
       }
     });
     this.app.listen(this.port, () => {
-      console.log('Webservice start at port: 8080');
+      console.log('WebService start at port: 8080');
     });
   }
 }
