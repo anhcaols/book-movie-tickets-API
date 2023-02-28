@@ -7,6 +7,7 @@ import { mainRouter } from '../routers/index.js';
 import { ApiError } from '../api-error.js';
 
 import httpStatus from 'http-status';
+import session from 'express-session';
 
 export class WebService {
   protected;
@@ -23,6 +24,14 @@ export class WebService {
     // this.app.use(express.static(path.join(__dirname, "./public")));
     this.app.use(cors());
     this.app.options('*', cors());
+
+    this.app.use(
+      session({
+        secret: 'your-secret-key',
+        resave: false,
+        saveUninitialized: true,
+      })
+    );
 
     this.app.use(mainRouter);
     this.app.use((err, req, res, next) => {

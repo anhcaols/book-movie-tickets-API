@@ -13,7 +13,7 @@ export const authMiddleware = (role) => async (req, res, next) => {
     const payload = verifyToken(token);
     const user = await AccountModel.findOne({
       where: {
-        username: payload.username,
+        email: payload.email,
       },
       attributes: { exclude: ['password'] },
     });

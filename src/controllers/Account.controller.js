@@ -13,6 +13,7 @@ export const createAccountController = async (req, res, next) => {
     value.roles = Role.USER;
     value.password = await hashPassword(value.password);
     await AccountService.createAccount(value);
+
     res.json({ message: 'Register account successfully', success: true });
 
     if (error) {
@@ -52,11 +53,29 @@ export const loginAccountController = async (req, res, next) => {
 
     const accountRes = { ...account.dataValues };
     delete accountRes.password;
+    req.session.accessToken = accessToken;
 
     return res.json({
       accessToken,
       refreshToken,
       account: accountRes,
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const logoutAccountController = async (req, res, next) => {
+  try {
+    req.session.destroy(function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json({
+          message: 'Logout account successfully',
+        });
+      }
     });
   } catch (e) {
     next(e);
