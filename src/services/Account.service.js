@@ -6,10 +6,10 @@ export class AccountService {
     await AccountModel.create(account);
   }
 
-  static async getAccountByUsername(username) {
+  static async getAccountByEmail(email) {
     return await AccountModel.findOne({
       where: {
-        username: username,
+        email: email,
       },
     });
   }

@@ -25,12 +25,6 @@ export const createAccountController = async (req, res, next) => {
   }
 };
 
-export const test = async (req, res, next) => {
-  console.log(req.user);
-
-  res.json({ message: 'ok' });
-};
-
 export const loginAccountController = async (req, res, next) => {
   try {
     const { error, value } = LoginAccountSchema.validate(req.body);
@@ -40,8 +34,7 @@ export const loginAccountController = async (req, res, next) => {
         message: error.message,
       });
     }
-    const account = await AccountService.getAccountByUsername(value.username);
-
+    const account = await AccountService.getAccountByEmail(value.email);
     if (!account) {
       return res.status(404).json({
         message: 'Account does not found',
@@ -49,24 +42,29 @@ export const loginAccountController = async (req, res, next) => {
     }
 
     const isEqual = await verifyPassword(value.password, account.password);
-
     if (!isEqual) {
       return res.status(400).json({
         message: 'Password does not match',
       });
     }
 
-    const { accessToken, refreshToken } = generateToken(account.username);
+    const { accessToken, refreshToken } = generateToken(account.email);
 
     const accountRes = { ...account.dataValues };
     delete accountRes.password;
 
     return res.json({
-      account: accountRes,
       accessToken,
       refreshToken,
+      account: accountRes,
     });
   } catch (e) {
     next(e);
   }
+};
+
+export const test = async (req, res, next) => {
+  console.log(req.user);
+
+  res.json({ message: 'ok' });
 };
