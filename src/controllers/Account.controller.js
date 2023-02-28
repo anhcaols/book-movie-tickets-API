@@ -1,7 +1,7 @@
 import { AccountService } from '../services/account.service.js';
-import { RegisterAccountSchema } from '../dto/Account/register-account.js';
+import { RegisterAccountSchema } from '../dto/account/register-account.js';
 import { hashPassword, verifyPassword } from '../utils/password.js';
-import { LoginAccountSchema } from '../dto/Account/login-account.js';
+import { LoginAccountSchema } from '../dto/account/login-account.js';
 import { generateToken } from '../utils/jwt.js';
 import { Role } from '../enums/auth.enum.js';
 
@@ -77,6 +77,14 @@ export const logoutAccount = async (req, res, next) => {
         });
       }
     });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const uploadAvatar = async (req, res, next) => {
+  try {
+    res.send('File uploaded successfully!');
   } catch (e) {
     next(e);
   }
