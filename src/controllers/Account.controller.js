@@ -5,7 +5,7 @@ import { LoginAccountSchema } from '../dto/Account/login-account.js';
 import { generateToken } from '../utils/jwt.js';
 import { Role } from '../enums/auth.enum.js';
 
-export const createAccountController = async (req, res, next) => {
+export const createAccount = async (req, res, next) => {
   try {
     const { error, value } = RegisterAccountSchema.validate(req.body);
 
@@ -26,7 +26,7 @@ export const createAccountController = async (req, res, next) => {
   }
 };
 
-export const loginAccountController = async (req, res, next) => {
+export const loginAccount = async (req, res, next) => {
   try {
     const { error, value } = LoginAccountSchema.validate(req.body);
 
@@ -66,7 +66,7 @@ export const loginAccountController = async (req, res, next) => {
   }
 };
 
-export const logoutAccountController = async (req, res, next) => {
+export const logoutAccount = async (req, res, next) => {
   try {
     req.session.destroy(function (err) {
       if (err) {
