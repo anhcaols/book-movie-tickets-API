@@ -34,7 +34,7 @@ export const AccountModel = DbService.sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    roles: {
+    role: {
       type: DataTypes.STRING,
       allowNull: false,
     },

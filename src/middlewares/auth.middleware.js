@@ -18,7 +18,7 @@ export const authMiddleware = (role) => async (req, res, next) => {
       attributes: { exclude: ['password'] },
     });
     if (role) {
-      if (!user.roles.includes(role)) {
+      if (!user.role.includes(role)) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden resource');
       }
     }

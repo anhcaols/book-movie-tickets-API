@@ -10,7 +10,7 @@ export const createAccount = async (req, res, next) => {
     const { error, value } = RegisterAccountSchema.validate(req.body);
 
     value.avatar = 'image';
-    value.roles = Role.USER;
+    value.role = Role.USER;
     value.password = await hashPassword(value.password);
     await AccountService.createAccount(value);
 
