@@ -50,15 +50,21 @@ export const loginAccount = async (req, res, next) => {
     }
 
     const { accessToken, refreshToken } = generateToken(account.email);
-
-    const accountRes = { ...account.dataValues };
-    delete accountRes.password;
     req.session.accessToken = accessToken;
 
     return res.json({
       accessToken,
       refreshToken,
-      account: accountRes,
+      account: {
+        id: account.dataValues.id,
+        fullName: account.dataValues.full_name,
+        email: account.dataValues.email,
+        phoneNumber: account.dataValues.phone_number,
+        gender: account.dataValues.gender,
+        dateOfBirth: account.dataValues.date_of_birth,
+        avatar: account.dataValues.avatar,
+        role: account.dataValues.role,
+      },
       success: true,
     });
   } catch (e) {
