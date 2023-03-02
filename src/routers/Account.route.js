@@ -1,13 +1,21 @@
 import 'express-async-errors';
 
 import { Router } from 'express';
-import { createAccount, loginAccount, logoutAccount, uploadAvatar, test } from '../controllers/account.controller.js';
+import {
+  createAccountController,
+  loginAccountController,
+  logoutAccountController,
+  uploadAvatarController,
+  test,
+  getAccountByAccessTokenController,
+} from '../controllers/account.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 
 export const accountRouter = Router();
 
-accountRouter.post('/auth/register', createAccount);
-accountRouter.post('/auth/login', loginAccount);
-accountRouter.post('/auth/logout', logoutAccount);
-accountRouter.post('/accounts/upload_avatar', uploadAvatar);
+accountRouter.post('/auth/register', createAccountController);
+accountRouter.post('/auth/login', loginAccountController);
+accountRouter.post('/auth/logout', logoutAccountController);
+accountRouter.post('/accounts/upload_avatar', uploadAvatarController);
+accountRouter.get('/accounts/info', authMiddleware(), getAccountByAccessTokenController);
 accountRouter.get('/test', authMiddleware(), test);

@@ -5,7 +5,7 @@ import { LoginAccountSchema } from '../dto/account/login-account.js';
 import { generateToken } from '../utils/jwt.js';
 import { Role } from '../enums/auth.enum.js';
 
-export const createAccount = async (req, res, next) => {
+export const createAccountController = async (req, res, next) => {
   try {
     const { error, value } = RegisterAccountSchema.validate(req.body);
 
@@ -26,7 +26,7 @@ export const createAccount = async (req, res, next) => {
   }
 };
 
-export const loginAccount = async (req, res, next) => {
+export const loginAccountController = async (req, res, next) => {
   try {
     const { error, value } = LoginAccountSchema.validate(req.body);
 
@@ -72,7 +72,7 @@ export const loginAccount = async (req, res, next) => {
   }
 };
 
-export const logoutAccount = async (req, res, next) => {
+export const logoutAccountController = async (req, res, next) => {
   try {
     req.session.destroy(function (err) {
       if (err) {
@@ -88,7 +88,27 @@ export const logoutAccount = async (req, res, next) => {
   }
 };
 
-export const uploadAvatar = async (req, res, next) => {
+export const getAccountByAccessTokenController = async (req, res, next) => {
+  try {
+    res.json({
+      account: {
+        id: req.user.dataValues.id,
+        fullName: req.user.dataValues.full_name,
+        email: req.user.dataValues.email,
+        phoneNumber: req.user.dataValues.phone_number,
+        gender: req.user.dataValues.gender,
+        dateOfBirth: req.user.dataValues.date_of_birth,
+        avatar: req.user.dataValues.avatar,
+        role: req.user.dataValues.role,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const uploadAvatarController = async (req, res, next) => {
   try {
     res.send('File uploaded successfully!');
   } catch (e) {
