@@ -2,26 +2,27 @@ import { GlobalConfig } from '../config/index.js';
 import express from 'express';
 import bodyParser from 'express';
 import cors from 'cors';
-import multer from 'multer';
 import { mainRouter } from '../routers/index.js';
 import { ApiError } from '../api-error.js';
-
+import path from 'path';
 import httpStatus from 'http-status';
 import session from 'express-session';
+import { fileURLToPath } from 'url';
 
 export class WebService {
   protected;
   static app;
   static port = GlobalConfig.port || 8080;
   static async start() {
-    const upload = multer();
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    // this.app.use(upload.single('image'));
-    // this.app.use(express.static(path.join(__dirname, "./public")));
+    this.app.use('/static', express.static(path.join(__dirname, '../../public/images')));
     this.app.use(cors());
     this.app.options('*', cors());
 

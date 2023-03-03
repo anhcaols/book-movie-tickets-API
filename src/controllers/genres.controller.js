@@ -1,17 +1,17 @@
-import { CreateGenreSchema, DeleteGenreSchema, updateGenreSchema } from '../dto/genres/index.js';
+import { GenreSchema } from '../dto/genre.js';
 import { GenresService } from '../services/genres.service.js';
 
 export const createGenderController = async (req, res, next) => {
   try {
-    const { error, value } = CreateGenreSchema.validate(req.body);
-    await GenresService.createGenre(value);
-    res.json({ message: 'Create genre successfully', success: true });
-
+    const { error, value } = GenreSchema.validate(req.body);
     if (error) {
       return res.status(400).json({
         message: error.message,
       });
     }
+
+    await GenresService.createGenre(value);
+    res.json({ message: 'Create genre successfully', success: true });
   } catch (e) {
     next(e);
   }
@@ -19,9 +19,8 @@ export const createGenderController = async (req, res, next) => {
 
 export const deleteGenderController = async (req, res, next) => {
   try {
-    const { error } = DeleteGenreSchema.validate(req.body);
     const genreId = req.params.id;
-    const genre = await GenresService.getGenderById(genreId);
+    const genre = await GenresService.getGenreById(genreId);
     if (!genre) {
       return res.status(404).json({
         message: 'Genre does not found',
@@ -30,12 +29,6 @@ export const deleteGenderController = async (req, res, next) => {
 
     await GenresService.deleteGenre(genreId);
     res.json({ message: 'Delete genre successfully', success: true });
-
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-      });
-    }
   } catch (e) {
     next(e);
   }
@@ -43,9 +36,15 @@ export const deleteGenderController = async (req, res, next) => {
 
 export const updateGenderController = async (req, res, next) => {
   try {
-    const { error, value } = updateGenreSchema.validate(req.body);
+    const { error, value } = GenreSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+
     const genreId = req.params.id;
-    const genre = await GenresService.getGenderById(genreId);
+    const genre = await GenresService.getGenreById(genreId);
     if (!genre) {
       return res.status(404).json({
         message: 'Genre does not found',
@@ -54,11 +53,6 @@ export const updateGenderController = async (req, res, next) => {
 
     await GenresService.updateGenre(value, genreId);
     res.json({ message: 'Update genre successfully', success: true });
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-      });
-    }
   } catch (e) {
     next(e);
   }

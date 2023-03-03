@@ -27,12 +27,12 @@ export const AccountModel = DbService.sequelize.define(
       allowNull: false,
     },
     date_of_birth: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     avatar: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     role: {
       type: DataTypes.STRING,

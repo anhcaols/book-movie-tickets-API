@@ -11,4 +11,4 @@ export const genreRouter = Router();
 
 genreRouter.post('/genres', createGenderController);
 genreRouter.delete('/genres/:id', deleteGenderController);
-genreRouter.put('/genres/:id', updateGenderController);
+genreRouter.patch('/genres/:id', updateGenderController);

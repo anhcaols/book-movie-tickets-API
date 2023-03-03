@@ -1,7 +1,7 @@
 import { GenresModel } from '../models/genres.model.js';
 
 export class GenresService {
-  static async getGenderById(genreId) {
+  static async getGenreById(genreId) {
     return await GenresModel.findOne({
       where: {
         id: genreId,
