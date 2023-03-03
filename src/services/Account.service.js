@@ -1,5 +1,4 @@
 import { AccountModel } from '../models/account.model.js';
-import { DbService } from './DbService.js';
 
 export class AccountService {
   static async createAccount(account) {

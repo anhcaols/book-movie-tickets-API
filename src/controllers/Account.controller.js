@@ -1,9 +1,8 @@
 import { AccountService } from '../services/account.service.js';
-import { RegisterAccountSchema } from '../dto/account/register-account.js';
 import { hashPassword, verifyPassword } from '../utils/password.js';
-import { LoginAccountSchema } from '../dto/account/login-account.js';
 import { generateToken } from '../utils/jwt.js';
 import { Role } from '../enums/auth.enum.js';
+import { LoginAccountSchema, RegisterAccountSchema } from '../dto/account/index.js';
 
 export const createAccountController = async (req, res, next) => {
   try {
@@ -50,7 +49,6 @@ export const loginAccountController = async (req, res, next) => {
     }
 
     const { accessToken, refreshToken } = generateToken(account.email);
-    req.session.accessToken = accessToken;
 
     return res.json({
       accessToken,
@@ -66,22 +64,6 @@ export const loginAccountController = async (req, res, next) => {
         role: account.dataValues.role,
       },
       success: true,
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-export const logoutAccountController = async (req, res, next) => {
-  try {
-    req.session.destroy(function (err) {
-      if (err) {
-        console.log(err);
-      } else {
-        res.json({
-          message: 'Logout account successfully',
-        });
-      }
     });
   } catch (e) {
     next(e);
@@ -114,10 +96,4 @@ export const uploadAvatarController = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
-
-export const test = async (req, res, next) => {
-  console.log(req.user);
-
-  res.json({ message: 'ok' });
 };

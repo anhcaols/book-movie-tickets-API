@@ -1,6 +1,6 @@
 import express from 'express';
-import { accountRouter } from './Account.route.js';
-
+import { accountRouter } from './account.route.js';
+import { genreRouter } from './genre.route.js';
 export const mainRouter = express.Router();
 
 mainRouter.get('/', (req, res) => {
@@ -8,3 +8,4 @@ mainRouter.get('/', (req, res) => {
 });
 
 mainRouter.use('/api', accountRouter);
+mainRouter.use('/api', genreRouter);

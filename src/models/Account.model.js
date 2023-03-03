@@ -41,17 +41,5 @@ export const AccountModel = DbService.sequelize.define(
   },
   {
     timestamps: false,
-  },
-  {
-    indexes: [
-      {
-        fields: ['email'],
-        unique: true,
-      },
-      {
-        fields: ['phone_number'],
-        unique: true,
-      },
-    ],
   }
 );
