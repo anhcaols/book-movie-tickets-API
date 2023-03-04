@@ -1,4 +1,4 @@
-import { GenresModel } from '../models/genres.model.js';
+import { GenresModel } from '../models/genre.model.js';
 
 export class GenresService {
   static async getGenreById(genreId) {

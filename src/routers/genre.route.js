@@ -5,7 +5,7 @@ import {
   createGenderController,
   deleteGenderController,
   updateGenderController,
-} from '../controllers/genres.controller.js';
+} from '../controllers/genre.controller.js';
 
 export const genreRouter = Router();
 

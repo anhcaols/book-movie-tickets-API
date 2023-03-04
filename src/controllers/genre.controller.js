@@ -1,5 +1,5 @@
 import { GenreSchema } from '../dto/genre.js';
-import { GenresService } from '../services/genres.service.js';
+import { GenresService } from '../services/genre.service.js';
 
 export const createGenderController = async (req, res, next) => {
   try {
