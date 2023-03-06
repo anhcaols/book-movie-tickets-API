@@ -10,7 +10,7 @@ export class MovieService {
   }
 
   static async createMovie(movie) {
-    await MovieModel.create(movie);
+    return await MovieModel.create(movie);
   }
 
   static async deleteMovie(movieId) {

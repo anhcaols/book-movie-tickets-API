@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export const MovieSchema = Joi.object({
-  genre_id: Joi.number().required(),
+  genre_id: Joi.any(),
   name: Joi.string().required(),
   description: Joi.string().required(),
   duration: Joi.string().required(),

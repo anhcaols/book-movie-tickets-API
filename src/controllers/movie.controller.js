@@ -1,5 +1,6 @@
 import { MovieSchema } from '../dto/movie.js';
 import { MovieService } from '../services/movie.service.js';
+import { MovieGenreService } from '../services/movie_genre.service.js';
 import fs from 'fs';
 
 export const createMovieController = async (req, res, next) => {
@@ -10,8 +11,12 @@ export const createMovieController = async (req, res, next) => {
         message: error.message,
       });
     }
-    console.log(req.file);
-    await MovieService.createMovie({ ...value, image: req.file.originalname });
+    const genres = value.genre_id.split(',');
+    const response = await MovieService.createMovie({ ...value, image: req.file.filename });
+    genres.map(async (genre) => {
+      await MovieGenreService.createMovieGenre({ movie_id: response.dataValues.id, genre_id: Number(genre) });
+    });
+
     res.json({ message: 'Create movie successfully', success: true });
   } catch (e) {
     next(e);
@@ -37,6 +42,7 @@ export const deleteMovieController = async (req, res, next) => {
     }
 
     await MovieService.deleteMovie(movieId);
+    await MovieGenreService.deleteMovieGenre(movieId);
 
     res.json({ message: 'Delete movie successfully', success: true });
   } catch (e) {
@@ -76,6 +82,7 @@ export const updateMovieController = async (req, res, next) => {
         throw err;
       }
     });
+
     await MovieService.updateMovie({ ...value, image: req.file.filename }, movieId);
     res.json({ message: 'Update genre successfully', success: true });
   } catch (e) {

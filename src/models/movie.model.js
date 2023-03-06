@@ -4,10 +4,6 @@ import { DataTypes } from 'sequelize';
 export const MovieModel = DbService.sequelize.define(
   'movies',
   {
-    genre_id: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
-    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
