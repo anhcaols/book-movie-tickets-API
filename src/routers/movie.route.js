@@ -3,6 +3,7 @@ import { Router } from 'express';
 import {
   createMovieController,
   deleteMovieController,
+  getMoviesController,
   updateMovieController,
 } from '../controllers/movie.controller.js';
 import multer from 'multer';
@@ -19,6 +20,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+movieRouter.get('/movies', getMoviesController);
 movieRouter.post('/movies', upload.single('image'), createMovieController);
 movieRouter.delete('/movies/:id', deleteMovieController);
 movieRouter.patch('/movies/:id', upload.single('image'), updateMovieController);

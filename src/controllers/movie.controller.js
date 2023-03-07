@@ -89,3 +89,49 @@ export const updateMovieController = async (req, res, next) => {
     next(e);
   }
 };
+
+export const getMoviesController = async (req, res, next) => {
+  const limit = parseInt(req.query.limit);
+  const offset = (parseInt(req.query.offset) - 1) * limit;
+
+  const movies = await MovieService.getMovies(offset, limit);
+  const totalDocs = await MovieService.getMoviesCount();
+  const totalPages = Math.ceil(totalDocs / limit);
+
+  const currentPage = Math.ceil((parseInt(req.query.offset) * limit) / totalDocs);
+
+  const data = movies.map((movie) => {
+    return {
+      id: movie.dataValues.id,
+      name: movie.dataValues.name,
+      description: movie.dataValues.description,
+      releaseDate: movie.dataValues.release_date,
+      duration: movie.dataValues.duration,
+      actor: movie.dataValues.actor,
+      director: movie.dataValues.director,
+      language: movie.dataValues.language,
+      country: movie.dataValues.country,
+      producer: movie.dataValues.producer,
+      status: movie.dataValues.status,
+      age: movie.dataValues.producer.age,
+      image: movie.dataValues.image,
+      trailer: movie.dataValues.trailer,
+    };
+  });
+  try {
+    res.json({
+      message: 'Get movies successfully',
+      movies: data,
+      pagination: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        currentPage,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};

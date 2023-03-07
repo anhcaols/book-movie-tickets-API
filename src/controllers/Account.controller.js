@@ -17,7 +17,6 @@ export const createAccountController = async (req, res, next) => {
     value.role = Role.USER;
     value.password = await hashPassword(value.password);
 
-    console.log(value);
     await AccountService.createAccount({ ...value });
 
     res.json({ message: 'Register account successfully', success: true });

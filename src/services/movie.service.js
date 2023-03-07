@@ -27,4 +27,12 @@ export class MovieService {
       where: { id: movieId },
     });
   }
+
+  static async getMovies(offset, limit) {
+    return await MovieModel.findAll({ offset, limit });
+  }
+
+  static async getMoviesCount() {
+    return await MovieModel.count();
+  }
 }
