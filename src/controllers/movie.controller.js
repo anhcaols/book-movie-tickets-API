@@ -91,14 +91,16 @@ export const updateMovieController = async (req, res, next) => {
 };
 
 export const getMoviesController = async (req, res, next) => {
-  const limit = parseInt(req.query.limit);
-  const offset = (parseInt(req.query.offset) - 1) * limit;
+  const limit = parseInt(req.query.limit) || 8;
+  const page = req.query.page || 1;
+  const offset = (page - 1) * limit;
 
   const movies = await MovieService.getMovies(offset, limit);
   const totalDocs = await MovieService.getMoviesCount();
   const totalPages = Math.ceil(totalDocs / limit);
 
-  const currentPage = Math.ceil((parseInt(req.query.offset) * limit) / totalDocs);
+  const hasPrevPage = page > 1;
+  const hasNextPage = page < totalPages;
 
   const data = movies.map((movie) => {
     return {
@@ -127,7 +129,9 @@ export const getMoviesController = async (req, res, next) => {
         offset,
         limit,
         totalPages,
-        currentPage,
+        page,
+        hasNextPage,
+        hasPrevPage,
       },
       success: true,
     });
