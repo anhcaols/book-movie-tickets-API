@@ -1,9 +1,7 @@
 import { AccountModel } from '../models/account.model.js';
-import httpStatus from 'http-status';
-import { ApiError } from '../api-error.js';
 import { verifyToken } from '../utils/jwt.js';
 
-export const authMiddleware = (role) => async (req, res, next) => {
+export const authMiddleware = () => async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];

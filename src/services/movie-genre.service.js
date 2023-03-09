@@ -1,4 +1,4 @@
-import { MovieGenreModel } from '../models/movie_genre.model.js';
+import { MovieGenreModel } from '../models/movie-genre.model.js';
 
 export class MovieGenreService {
   static async getMovieGenreById(movieId) {

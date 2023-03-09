@@ -1,4 +1,4 @@
-import { DbService } from '../services/DbService.js';
+import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
 
 export const GenresModel = DbService.sequelize.define(

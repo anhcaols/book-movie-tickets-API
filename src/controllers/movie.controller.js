@@ -1,6 +1,6 @@
 import { MovieSchema } from '../dto/movie.js';
 import { MovieService } from '../services/movie.service.js';
-import { MovieGenreService } from '../services/movie_genre.service.js';
+import { MovieGenreService } from '../services/movie-genre.service.js';
 import fs from 'fs';
 
 export const createMovieController = async (req, res, next) => {
