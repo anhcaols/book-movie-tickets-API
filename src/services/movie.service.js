@@ -30,10 +30,22 @@ export class MovieService {
     });
   }
 
-  static async getMovies(offset, limit) {
+  static async getMovies(offset, limit, type) {
+    let condition = {};
+    if (type == 'nowShowing') {
+      condition = {
+        status: 1,
+      };
+    }
+    if (type == 'comingSoon') {
+      condition = {
+        status: 0,
+      };
+    }
     return await MovieModel.findAll({
       offset,
       limit,
+      where: condition,
       include: {
         model: GenresModel,
         attributes: ['name'],
@@ -42,7 +54,20 @@ export class MovieService {
     });
   }
 
-  static async getMoviesCount() {
-    return await MovieModel.count();
+  static async getMoviesCount(type) {
+    let condition = {};
+    if (type == 'nowShowing') {
+      condition = {
+        status: 1,
+      };
+    }
+    if (type == 'comingSoon') {
+      condition = {
+        status: 0,
+      };
+    }
+    return await MovieModel.count({
+      where: condition,
+    });
   }
 }

@@ -96,6 +96,7 @@ export const getMoviesController = async (req, res, next) => {
   const offset = (page - 1) * limit;
 
   const movies = await MovieService.getMovies(offset, limit);
+  const nowShowingMovies = await MovieService.getMovies(offset, limit);
   const totalDocs = await MovieService.getMoviesCount();
   const totalPages = Math.ceil(totalDocs / limit);
 
@@ -127,6 +128,112 @@ export const getMoviesController = async (req, res, next) => {
     res.json({
       message: 'Get movies successfully',
       movies: data,
+      pagination: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page,
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getNowShowingMoviesController = async (req, res, next) => {
+  const limit = parseInt(req.query.limit) || 8;
+  const page = req.query.page || 1;
+  const offset = (page - 1) * limit;
+
+  const nowShowingMovies = await MovieService.getMovies(offset, limit, 'nowShowing');
+  const totalDocs = await MovieService.getMoviesCount('nowShowing');
+  const totalPages = Math.ceil(totalDocs / limit);
+
+  const hasPrevPage = page > 1;
+  const hasNextPage = page < totalPages;
+
+  const data = nowShowingMovies.map((movie) => {
+    const genres = movie.genres.map((genre) => genre.name);
+
+    return {
+      id: movie.dataValues.id,
+      name: movie.dataValues.name,
+      description: movie.dataValues.description,
+      releaseDate: movie.dataValues.release_date,
+      duration: movie.dataValues.duration,
+      actor: movie.dataValues.actor,
+      director: movie.dataValues.director,
+      language: movie.dataValues.language,
+      country: movie.dataValues.country,
+      producer: movie.dataValues.producer,
+      status: movie.dataValues.status,
+      age: movie.dataValues.producer.age,
+      image: movie.dataValues.image,
+      trailer: movie.dataValues.trailer,
+      genres: [...genres],
+    };
+  });
+  try {
+    res.json({
+      message: 'Get now showing movies successfully',
+      nowShowingMovies: data,
+      pagination: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page,
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getComingSoonMoviesController = async (req, res, next) => {
+  const limit = parseInt(req.query.limit) || 8;
+  const page = req.query.page || 1;
+  const offset = (page - 1) * limit;
+
+  const comingSoonMovies = await MovieService.getMovies(offset, limit, 'comingSoon');
+  const totalDocs = await MovieService.getMoviesCount('nowShowing');
+  const totalPages = Math.ceil(totalDocs / limit);
+
+  const hasPrevPage = page > 1;
+  const hasNextPage = page < totalPages;
+
+  const data = comingSoonMovies.map((movie) => {
+    const genres = movie.genres.map((genre) => genre.name);
+
+    return {
+      id: movie.dataValues.id,
+      name: movie.dataValues.name,
+      description: movie.dataValues.description,
+      releaseDate: movie.dataValues.release_date,
+      duration: movie.dataValues.duration,
+      actor: movie.dataValues.actor,
+      director: movie.dataValues.director,
+      language: movie.dataValues.language,
+      country: movie.dataValues.country,
+      producer: movie.dataValues.producer,
+      status: movie.dataValues.status,
+      age: movie.dataValues.producer.age,
+      image: movie.dataValues.image,
+      trailer: movie.dataValues.trailer,
+      genres: [...genres],
+    };
+  });
+  try {
+    res.json({
+      message: 'Get coming soon movies successfully',
+      comingSoonMovies: data,
       pagination: {
         totalDocs,
         offset,
