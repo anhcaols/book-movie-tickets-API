@@ -1,3 +1,5 @@
+import { GenresModel } from '../models/genre.model.js';
+import { MovieGenreModel } from '../models/movie-genre.model.js';
 import { MovieModel } from '../models/movie.model.js';
 
 export class MovieService {
@@ -29,7 +31,15 @@ export class MovieService {
   }
 
   static async getMovies(offset, limit) {
-    return await MovieModel.findAll({ offset, limit });
+    return await MovieModel.findAll({
+      offset,
+      limit,
+      include: {
+        model: GenresModel,
+        attributes: ['name'],
+        through: { attributes: [] },
+      },
+    });
   }
 
   static async getMoviesCount() {

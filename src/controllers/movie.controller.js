@@ -103,6 +103,8 @@ export const getMoviesController = async (req, res, next) => {
   const hasNextPage = page < totalPages;
 
   const data = movies.map((movie) => {
+    const genres = movie.genres.map((genre) => genre.name);
+
     return {
       id: movie.dataValues.id,
       name: movie.dataValues.name,
@@ -118,6 +120,7 @@ export const getMoviesController = async (req, res, next) => {
       age: movie.dataValues.producer.age,
       image: movie.dataValues.image,
       trailer: movie.dataValues.trailer,
+      genres: [...genres],
     };
   });
   try {
