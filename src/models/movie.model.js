@@ -16,7 +16,6 @@ export const MovieModel = DbService.sequelize.define(
     duration: {
       type: DataTypes.NUMBER,
       allowNull: false,
-      unique: true,
     },
     release_date: {
       type: DataTypes.DATE,
@@ -58,8 +57,21 @@ export const MovieModel = DbService.sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    slug: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
   },
   {
     timestamps: false,
+  }, // Options object passed in the Model.define() call
+  {
+    indexes: [
+      {
+        unique: true,
+        fields: ['name'], // Whatever other field you need to make unique
+      },
+    ],
   }
 );

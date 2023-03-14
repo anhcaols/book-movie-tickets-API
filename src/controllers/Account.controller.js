@@ -10,6 +10,7 @@ export const createAccountController = async (req, res, next) => {
     if (error) {
       return res.status(400).json({
         message: error.message,
+        status: 400,
       });
     }
 
@@ -31,6 +32,7 @@ export const loginAccountController = async (req, res, next) => {
     if (error) {
       return res.status(400).json({
         message: error.message,
+        status: 400,
       });
     }
 
@@ -38,6 +40,7 @@ export const loginAccountController = async (req, res, next) => {
     if (!account) {
       return res.status(404).json({
         message: 'Account does not found',
+        status: 404,
       });
     }
 
@@ -45,6 +48,7 @@ export const loginAccountController = async (req, res, next) => {
     if (!isEqual) {
       return res.status(400).json({
         message: 'Password does not match',
+        status: 400,
       });
     }
 

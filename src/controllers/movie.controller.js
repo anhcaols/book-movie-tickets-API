@@ -2,6 +2,7 @@ import { MovieSchema } from '../dto/movie.js';
 import { MovieService } from '../services/movie.service.js';
 import { MovieGenreService } from '../services/movie-genre.service.js';
 import fs from 'fs';
+import slugify from 'slugify';
 
 export const createMovieController = async (req, res, next) => {
   try {
@@ -9,10 +10,20 @@ export const createMovieController = async (req, res, next) => {
     if (error) {
       return res.status(400).json({
         message: error.message,
+        status: 400,
       });
     }
+
+    const slug = slugify(value.name, {
+      replacement: '-',
+      remove: ':',
+      lower: true,
+      strict: false,
+      locale: 'vi',
+      trim: true,
+    });
     const genres = value.genre_id.split(',');
-    const response = await MovieService.createMovie({ ...value, image: req.file.filename });
+    const response = await MovieService.createMovie({ ...value, image: req.file.filename, slug });
     genres.map(async (genre) => {
       await MovieGenreService.createMovieGenre({ movie_id: response.dataValues.id, genre_id: Number(genre) });
     });
@@ -30,6 +41,7 @@ export const deleteMovieController = async (req, res, next) => {
     if (!movie) {
       return res.status(404).json({
         message: 'Movie does not found',
+        status: 404,
       });
     }
     const imageName = movie.dataValues.image;
@@ -56,8 +68,18 @@ export const updateMovieController = async (req, res, next) => {
     if (error) {
       return res.status(400).json({
         message: error.message,
+        status: 400,
       });
     }
+
+    const slug = slugify(value.name, {
+      replacement: '-',
+      remove: ':',
+      lower: true,
+      strict: false,
+      locale: 'vi',
+      trim: true,
+    });
 
     const movieId = req.params.id;
     const movie = await MovieService.getMovieById(movieId);
@@ -73,6 +95,7 @@ export const updateMovieController = async (req, res, next) => {
       }
       return res.status(404).json({
         message: 'Movie does not found',
+        status: 404,
       });
     }
     // xoa anh cu khi cap nhat anh moi
@@ -83,7 +106,7 @@ export const updateMovieController = async (req, res, next) => {
       }
     });
 
-    await MovieService.updateMovie({ ...value, image: req.file.filename }, movieId);
+    await MovieService.updateMovie({ ...value, image: req.file.filename, slug }, movieId);
     res.json({ message: 'Update genre successfully', success: true });
   } catch (e) {
     next(e);
@@ -96,7 +119,6 @@ export const getMoviesController = async (req, res, next) => {
   const offset = (page - 1) * limit;
 
   const movies = await MovieService.getMovies(offset, limit);
-  const nowShowingMovies = await MovieService.getMovies(offset, limit);
   const totalDocs = await MovieService.getMoviesCount();
   const totalPages = Math.ceil(totalDocs / limit);
 
@@ -122,18 +144,19 @@ export const getMoviesController = async (req, res, next) => {
       image: movie.dataValues.image,
       trailer: movie.dataValues.trailer,
       genres: [...genres],
+      slug: movie.dataValues.slug,
     };
   });
   try {
     res.json({
       message: 'Get movies successfully',
       movies: data,
-      pagination: {
+      paginationOptions: {
         totalDocs,
         offset,
         limit,
         totalPages,
-        page,
+        page: Number(page),
         hasNextPage,
         hasPrevPage,
       },
@@ -175,13 +198,14 @@ export const getNowShowingMoviesController = async (req, res, next) => {
       image: movie.dataValues.image,
       trailer: movie.dataValues.trailer,
       genres: [...genres],
+      slug: movie.dataValues.slug,
     };
   });
   try {
     res.json({
       message: 'Get now showing movies successfully',
-      nowShowingMovies: data,
-      pagination: {
+      movies: data,
+      paginationOptions: {
         totalDocs,
         offset,
         limit,
@@ -203,7 +227,7 @@ export const getComingSoonMoviesController = async (req, res, next) => {
   const offset = (page - 1) * limit;
 
   const comingSoonMovies = await MovieService.getMovies(offset, limit, 'comingSoon');
-  const totalDocs = await MovieService.getMoviesCount('nowShowing');
+  const totalDocs = await MovieService.getMoviesCount('comingSoon');
   const totalPages = Math.ceil(totalDocs / limit);
 
   const hasPrevPage = page > 1;
@@ -228,13 +252,14 @@ export const getComingSoonMoviesController = async (req, res, next) => {
       image: movie.dataValues.image,
       trailer: movie.dataValues.trailer,
       genres: [...genres],
+      slug: movie.dataValues.slug,
     };
   });
   try {
     res.json({
       message: 'Get coming soon movies successfully',
-      comingSoonMovies: data,
-      pagination: {
+      movies: data,
+      paginationOptions: {
         totalDocs,
         offset,
         limit,
@@ -243,6 +268,34 @@ export const getComingSoonMoviesController = async (req, res, next) => {
         hasNextPage,
         hasPrevPage,
       },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getIdBySlugController = async (req, res, next) => {
+  const slug = req.params.slug;
+  const movieId = await MovieService.getIdBySlug(slug);
+  try {
+    res.json({
+      message: 'Get id movies successfully',
+      id: movieId.id,
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getMovieController = async (req, res, next) => {
+  const movieId = req.params.id;
+  const movie = await MovieService.getMovie(movieId);
+  try {
+    res.json({
+      message: 'Get movie successfully',
+      movie: movie,
       success: true,
     });
   } catch (e) {

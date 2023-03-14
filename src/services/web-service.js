@@ -45,6 +45,7 @@ export class WebService {
       } else {
         res.status(500).json({
           message: 'Interval error',
+          status: 500,
         });
       }
     });

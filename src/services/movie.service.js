@@ -70,4 +70,16 @@ export class MovieService {
       where: condition,
     });
   }
+
+  static async getIdBySlug(slug) {
+    return await MovieModel.findOne({
+      where: { slug: slug },
+    });
+  }
+
+  static async getMovie(movieId) {
+    return await MovieModel.findOne({
+      where: { id: movieId },
+    });
+  }
 }

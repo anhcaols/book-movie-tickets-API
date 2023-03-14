@@ -7,6 +7,7 @@ export const createGenderController = async (req, res, next) => {
     if (error) {
       return res.status(400).json({
         message: error.message,
+        status: 400,
       });
     }
 
@@ -24,6 +25,7 @@ export const deleteGenderController = async (req, res, next) => {
     if (!genre) {
       return res.status(404).json({
         message: 'Genre does not found',
+        status: 404,
       });
     }
 
@@ -48,6 +50,7 @@ export const updateGenderController = async (req, res, next) => {
     if (!genre) {
       return res.status(404).json({
         message: 'Genre does not found',
+        status: 400,
       });
     }
 
