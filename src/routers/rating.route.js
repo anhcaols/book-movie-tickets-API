@@ -6,5 +6,5 @@ import { authMiddleware } from '../middlewares/auth.middleware.js';
 
 export const ratingRouter = Router();
 
-ratingRouter.get('/ratings', authMiddleware(), getRatingsController);
+ratingRouter.get('/ratings/:id', authMiddleware(), getRatingsController);
 ratingRouter.post('/ratings', authMiddleware(), createRatingController);

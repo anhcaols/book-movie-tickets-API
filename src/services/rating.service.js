@@ -9,16 +9,35 @@ export class RatingService {
     });
   }
 
-  static async getRatings(offset, limit) {
-    return await RatingModel.findAll({ offset, limit });
+  static async getRatings(offset, limit, movieId) {
+    return await RatingModel.findAll({
+      offset,
+      limit,
+      where: {
+        movie_id: movieId,
+      },
+    });
   }
 
-  static async getRatingsCount() {
-    return await RatingModel.count();
+  static async getRatingsCount(movieId) {
+    return await RatingModel.count({
+      where: {
+        movie_id: movieId,
+      },
+    });
   }
 
   static async createRating(rating) {
     await RatingModel.create(rating);
+  }
+
+  static async existingRating(movieId, userId) {
+    await RatingModel.findOne({
+      where: {
+        movie_id: movieId,
+        user_id: userId,
+      },
+    });
   }
 
   static async deleteRating(ratingId) {

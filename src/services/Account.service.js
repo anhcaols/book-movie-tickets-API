@@ -12,4 +12,12 @@ export class AccountService {
       },
     });
   }
+
+  static async getAccountById(id) {
+    return await AccountModel.findOne({
+      where: {
+        id,
+      },
+    });
+  }
 }
