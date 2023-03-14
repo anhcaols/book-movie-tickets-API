@@ -17,3 +17,33 @@ export const createRatingController = async (req, res, next) => {
     next(e);
   }
 };
+
+export const getRatingsController = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const page = req.query.page || 1;
+    const offset = (page - 1) * limit;
+    const totalDocs = await RatingService.getRatingsCount();
+    const totalPages = Math.ceil(totalDocs / limit);
+    const hasPrevPage = page > 1;
+    const hasNextPage = page < totalPages;
+
+    const ratings = await RatingService.getRatings(offset, limit);
+    res.json({
+      message: 'Get ratings successfully',
+      ratings,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page,
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};

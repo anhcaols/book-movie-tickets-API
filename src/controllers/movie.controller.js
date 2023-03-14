@@ -140,7 +140,7 @@ export const getMoviesController = async (req, res, next) => {
       country: movie.dataValues.country,
       producer: movie.dataValues.producer,
       status: movie.dataValues.status,
-      age: movie.dataValues.producer.age,
+      age: movie.dataValues.age,
       image: movie.dataValues.image,
       trailer: movie.dataValues.trailer,
       genres: [...genres],
@@ -194,7 +194,7 @@ export const getNowShowingMoviesController = async (req, res, next) => {
       country: movie.dataValues.country,
       producer: movie.dataValues.producer,
       status: movie.dataValues.status,
-      age: movie.dataValues.producer.age,
+      age: movie.dataValues.age,
       image: movie.dataValues.image,
       trailer: movie.dataValues.trailer,
       genres: [...genres],
@@ -248,7 +248,7 @@ export const getComingSoonMoviesController = async (req, res, next) => {
       country: movie.dataValues.country,
       producer: movie.dataValues.producer,
       status: movie.dataValues.status,
-      age: movie.dataValues.producer.age,
+      age: movie.dataValues.age,
       image: movie.dataValues.image,
       trailer: movie.dataValues.trailer,
       genres: [...genres],
@@ -301,7 +301,7 @@ export const getMovieController = async (req, res, next) => {
       country: movie.dataValues.country,
       producer: movie.dataValues.producer,
       status: movie.dataValues.status,
-      age: movie.dataValues.producer.age,
+      age: movie.dataValues.age,
       image: movie.dataValues.image,
       trailer: movie.dataValues.trailer,
       genres: [...genres],
@@ -311,29 +311,9 @@ export const getMovieController = async (req, res, next) => {
   try {
     res.json({
       message: 'Get coming soon movies successfully',
-      movies: data[0],
+      movie: data[0],
+      success: true,
     });
-
-    //   message: 'Get movie successfully',
-    //   movie: {
-    //     id: movie.dataValues.id,
-    //     name: movie.dataValues.name,
-    //     description: movie.dataValues.description,
-    //     releaseDate: movie.dataValues.release_date,
-    //     duration: movie.dataValues.duration,
-    //     actor: movie.dataValues.actor,
-    //     director: movie.dataValues.director,
-    //     language: movie.dataValues.language,
-    //     country: movie.dataValues.country,
-    //     producer: movie.dataValues.producer,
-    //     status: movie.dataValues.status,
-    //     age: movie.dataValues.producer.age,
-    //     image: movie.dataValues.image,
-    //     trailer: movie.dataValues.trailer,
-    //     slug: movie.dataValues.slug,
-    //   },
-    //   success: true,
-    // });
   } catch (e) {
     next(e);
   }

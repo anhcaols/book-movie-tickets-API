@@ -9,6 +9,14 @@ export class RatingService {
     });
   }
 
+  static async getRatings(offset, limit) {
+    return await RatingModel.findAll({ offset, limit });
+  }
+
+  static async getRatingsCount() {
+    return await RatingModel.count();
+  }
+
   static async createRating(rating) {
     await RatingModel.create(rating);
   }
