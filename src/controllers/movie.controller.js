@@ -275,27 +275,20 @@ export const getComingSoonMoviesController = async (req, res, next) => {
   }
 };
 
-export const getIdBySlugController = async (req, res, next) => {
-  const slug = req.params.slug;
-  const movieId = await MovieService.getIdBySlug(slug);
-  try {
-    res.json({
-      message: 'Get id movies successfully',
-      id: movieId.id,
-      success: true,
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
 export const getMovieController = async (req, res, next) => {
-  const movieId = req.params.id;
-  const movie = await MovieService.getMovie(movieId);
+  const slug = req.params.slug;
+
+  const movie = await MovieService.getMovieBySlug(slug);
+  if (!movie) {
+    return res.status(404).json({
+      message: 'Movie does not found',
+      status: 404,
+    });
+  }
   try {
     res.json({
       message: 'Get movie successfully',
-      movie: movie,
+      movie,
       success: true,
     });
   } catch (e) {

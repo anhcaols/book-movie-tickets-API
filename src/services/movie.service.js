@@ -11,6 +11,14 @@ export class MovieService {
     });
   }
 
+  static async getMovieBySlug(slug) {
+    return await MovieModel.findOne({
+      where: {
+        slug: slug,
+      },
+    });
+  }
+
   static async createMovie(movie) {
     return await MovieModel.create(movie);
   }
@@ -68,18 +76,6 @@ export class MovieService {
     }
     return await MovieModel.count({
       where: condition,
-    });
-  }
-
-  static async getIdBySlug(slug) {
-    return await MovieModel.findOne({
-      where: { slug: slug },
-    });
-  }
-
-  static async getMovie(movieId) {
-    return await MovieModel.findOne({
-      where: { id: movieId },
     });
   }
 }

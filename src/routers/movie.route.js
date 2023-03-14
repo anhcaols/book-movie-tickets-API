@@ -4,7 +4,6 @@ import {
   createMovieController,
   deleteMovieController,
   getComingSoonMoviesController,
-  getIdBySlugController,
   getMovieController,
   getMoviesController,
   getNowShowingMoviesController,
@@ -27,8 +26,7 @@ const upload = multer({ storage: storage });
 movieRouter.get('/movies', getMoviesController);
 movieRouter.get('/movies/now-showing', getNowShowingMoviesController);
 movieRouter.get('/movies/coming-soon', getComingSoonMoviesController);
-movieRouter.get('/movies/slug/:slug', getIdBySlugController);
-movieRouter.get('/movies/:id', getMovieController);
+movieRouter.get('/movies/:slug', getMovieController);
 
 movieRouter.post('/movies', upload.single('image'), createMovieController);
 movieRouter.delete('/movies/:id', deleteMovieController);
