@@ -285,12 +285,55 @@ export const getMovieController = async (req, res, next) => {
       status: 404,
     });
   }
+
+  const data = movie.map((movie) => {
+    const genres = movie.genres.map((genre) => genre.name);
+
+    return {
+      id: movie.dataValues.id,
+      name: movie.dataValues.name,
+      description: movie.dataValues.description,
+      releaseDate: movie.dataValues.release_date,
+      duration: movie.dataValues.duration,
+      actor: movie.dataValues.actor,
+      director: movie.dataValues.director,
+      language: movie.dataValues.language,
+      country: movie.dataValues.country,
+      producer: movie.dataValues.producer,
+      status: movie.dataValues.status,
+      age: movie.dataValues.producer.age,
+      image: movie.dataValues.image,
+      trailer: movie.dataValues.trailer,
+      genres: [...genres],
+      slug: movie.dataValues.slug,
+    };
+  });
   try {
     res.json({
-      message: 'Get movie successfully',
-      movie,
-      success: true,
+      message: 'Get coming soon movies successfully',
+      movies: data[0],
     });
+
+    //   message: 'Get movie successfully',
+    //   movie: {
+    //     id: movie.dataValues.id,
+    //     name: movie.dataValues.name,
+    //     description: movie.dataValues.description,
+    //     releaseDate: movie.dataValues.release_date,
+    //     duration: movie.dataValues.duration,
+    //     actor: movie.dataValues.actor,
+    //     director: movie.dataValues.director,
+    //     language: movie.dataValues.language,
+    //     country: movie.dataValues.country,
+    //     producer: movie.dataValues.producer,
+    //     status: movie.dataValues.status,
+    //     age: movie.dataValues.producer.age,
+    //     image: movie.dataValues.image,
+    //     trailer: movie.dataValues.trailer,
+    //     slug: movie.dataValues.slug,
+    //   },
+    //   success: true,
+    // });
   } catch (e) {
     next(e);
   }
