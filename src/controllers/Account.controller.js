@@ -14,7 +14,6 @@ export const createAccountController = async (req, res, next) => {
       });
     }
 
-    value.avatar = 'image';
     value.role = Role.USER;
     value.password = await hashPassword(value.password);
 

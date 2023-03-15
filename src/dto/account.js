@@ -16,5 +16,5 @@ export const RegisterAccountSchema = Joi.object({
   confirm_password: Joi.ref('password'),
   phone_number: Joi.string().required(),
   date_of_birth: Joi.string().required(),
-  gender: Joi.string().required().valid('male', 'female'),
+  gender: Joi.string().required(),
 });

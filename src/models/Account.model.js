@@ -6,7 +6,7 @@ export const AccountModel = DbService.sequelize.define(
   {
     full_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -19,16 +19,16 @@ export const AccountModel = DbService.sequelize.define(
     },
     phone_number: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       unique: true,
     },
     gender: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     date_of_birth: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     avatar: {
       type: DataTypes.STRING,

@@ -12,6 +12,7 @@ export const createRatingController = async (req, res, next) => {
       return res.status(404).json({
         message: 'Existing Rating',
         status: 404,
+        success: false,
       });
     }
 
@@ -52,16 +53,19 @@ export const getRatingsController = async (req, res, next) => {
     const data = await Promise.all(
       ratings.map(async (rating) => {
         const ownerReviewer = await AccountService.getAccountById(rating.dataValues.user_id);
-
         return {
           id: rating.dataValues.id,
           rate: rating.dataValues.rate,
           movieId: rating.dataValues.movie_id,
           user: {
+            id: ownerReviewer.dataValues.id,
             fullName: ownerReviewer.dataValues.full_name,
             avatar: ownerReviewer.dataValues.avatar,
             email: ownerReviewer.dataValues.email,
+            role: ownerReviewer.dataValues.role,
           },
+          createdAt: rating.dataValues.createdAt,
+          updatedAt: rating.dataValues.updatedAt,
         };
       })
     );
