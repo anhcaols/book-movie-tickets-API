@@ -84,24 +84,3 @@ export const getRatingsController = async (req, res, next) => {
     next(e);
   }
 };
-
-export const getScoreRateController = async (req, res, next) => {
-  const movieId = req.params.id;
-  let sumRate = 0;
-
-  const rates = await RatingService.getRatesByMovie(movieId);
-  rates.map((rate) => {
-    sumRate += rate.dataValues.rate;
-  });
-  const scoreRate = sumRate / rates.length;
-  try {
-    console.log(sumRate);
-    res.json({
-      message: 'Get score rate successfully',
-      scoreRate,
-      success: true,
-    });
-  } catch (e) {
-    next(e);
-  }
-};
