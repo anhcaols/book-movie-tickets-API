@@ -1,3 +1,4 @@
+import { AccountModel } from '../models/account.model.js';
 import { RatingModel } from '../models/rating.model.js';
 
 export class RatingService {
@@ -19,6 +20,14 @@ export class RatingService {
     });
   }
 
+  static async getRatesByMovie(movieId) {
+    return await RatingModel.findAll({
+      where: {
+        movie_id: movieId,
+      },
+    });
+  }
+
   static async getRatingsCount(movieId) {
     return await RatingModel.count({
       where: {
@@ -32,7 +41,7 @@ export class RatingService {
   }
 
   static async existingRating(movieId, userId) {
-    await RatingModel.findOne({
+    return await RatingModel.findOne({
       where: {
         movie_id: movieId,
         user_id: userId,

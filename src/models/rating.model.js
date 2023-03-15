@@ -1,5 +1,6 @@
 import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
+import { AccountModel } from './account.model.js';
 
 export const RatingModel = DbService.sequelize.define('ratings', {
   user_id: {
@@ -29,3 +30,6 @@ export const RatingModel = DbService.sequelize.define('ratings', {
     allowNull: false,
   },
 });
+
+AccountModel.hasMany(RatingModel, { foreignKey: 'user_id' });
+RatingModel.belongsTo(AccountModel, { foreignKey: 'user_id' });

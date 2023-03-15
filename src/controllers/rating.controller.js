@@ -7,7 +7,7 @@ export const createRatingController = async (req, res, next) => {
   try {
     const { error, value } = RatingSchema.validate(req.body);
 
-    const existingRating = RatingService.existingRating(value.movie_id, value.user_id);
+    const existingRating = await RatingService.existingRating(value.movie_id, value.user_id);
     if (existingRating) {
       return res.status(404).json({
         message: 'Existing Rating',
@@ -49,11 +49,26 @@ export const getRatingsController = async (req, res, next) => {
     }
 
     const ratings = await RatingService.getRatings(offset, limit, movieId);
-    console.log(ratings);
-    // const ownerReviewer = AccountService.getAccountById(ratings)
+    const data = await Promise.all(
+      ratings.map(async (rating) => {
+        const ownerReviewer = await AccountService.getAccountById(rating.dataValues.user_id);
+
+        return {
+          id: rating.dataValues.id,
+          rate: rating.dataValues.rate,
+          movieId: rating.dataValues.movie_id,
+          user: {
+            fullName: ownerReviewer.dataValues.full_name,
+            avatar: ownerReviewer.dataValues.avatar,
+            email: ownerReviewer.dataValues.email,
+          },
+        };
+      })
+    );
+
     res.json({
       message: 'Get ratings successfully',
-      ratings,
+      ratings: data,
       paginationOptions: {
         totalDocs,
         offset,
@@ -63,6 +78,27 @@ export const getRatingsController = async (req, res, next) => {
         hasNextPage,
         hasPrevPage,
       },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getScoreRateController = async (req, res, next) => {
+  const movieId = req.params.id;
+  let sumRate = 0;
+
+  const rates = await RatingService.getRatesByMovie(movieId);
+  rates.map((rate) => {
+    sumRate += rate.dataValues.rate;
+  });
+  const scoreRate = sumRate / rates.length;
+  try {
+    console.log(sumRate);
+    res.json({
+      message: 'Get score rate successfully',
+      scoreRate,
       success: true,
     });
   } catch (e) {
