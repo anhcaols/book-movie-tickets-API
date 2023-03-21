@@ -54,9 +54,7 @@ export const getRatingsController = async (req, res, next) => {
       ratings.map(async (rating) => {
         const ownerReviewer = await AccountService.getAccountById(rating.dataValues.user_id);
         return {
-          id: rating.dataValues.id,
-          rate: rating.dataValues.rate,
-          movieId: rating.dataValues.movie_id,
+          ...rating.dataValues,
           user: {
             id: ownerReviewer.dataValues.id,
             fullName: ownerReviewer.dataValues.full_name,
@@ -64,8 +62,6 @@ export const getRatingsController = async (req, res, next) => {
             email: ownerReviewer.dataValues.email,
             role: ownerReviewer.dataValues.role,
           },
-          createdAt: rating.dataValues.createdAt,
-          updatedAt: rating.dataValues.updatedAt,
         };
       })
     );
