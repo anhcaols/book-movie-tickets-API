@@ -4,20 +4,20 @@ import { DataTypes } from 'sequelize';
 export const ScheduleModel = DbService.sequelize.define(
   'schedules',
   {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    cinema_id: {
+    movie_id: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    row_number: {
+    room_id: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    column_number: {
-      type: DataTypes.STRING,
+    start_date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    end_date: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
   },

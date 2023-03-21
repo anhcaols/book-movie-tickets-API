@@ -4,20 +4,20 @@ import { DataTypes } from 'sequelize';
 export const RoomModel = DbService.sequelize.define(
   'rooms',
   {
-    movie_id: {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    cinema_id: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    room_id: {
+    row_number: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    start_date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    end_date: {
-      type: DataTypes.DATE,
+    column_number: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },

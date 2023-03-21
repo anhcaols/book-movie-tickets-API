@@ -4,6 +4,7 @@ import { cinemaRouter } from './cinema.route.js';
 import { genreRouter } from './genre.route.js';
 import { movieRouter } from './movie.route.js';
 import { ratingRouter } from './rating.route.js';
+import { roomRouter } from './room.route.js';
 
 export const mainRouter = express.Router();
 
@@ -16,3 +17,4 @@ mainRouter.use('/api', genreRouter);
 mainRouter.use('/api', movieRouter);
 mainRouter.use('/api', cinemaRouter);
 mainRouter.use('/api', ratingRouter);
+mainRouter.use('/api', roomRouter);
