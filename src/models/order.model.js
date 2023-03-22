@@ -36,7 +36,7 @@ export const OrderModel = DbService.sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    total_money: {
+    total_amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },

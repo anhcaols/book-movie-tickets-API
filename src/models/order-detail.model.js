@@ -8,12 +8,16 @@ export const TicketModel = DbService.sequelize.define(
       type: DataTypes.NUMBER,
       allowNull: false,
     },
+    order_id: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
     quantity: {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    total_money: {
-      type: DataTypes.NUMBER,
+    total_price: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
   },
