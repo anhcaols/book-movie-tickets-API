@@ -17,6 +17,10 @@ export const SeatModel = DbService.sequelize.define(
       type: DataTypes.NUMBER,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
     price: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,

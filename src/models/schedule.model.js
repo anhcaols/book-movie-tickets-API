@@ -12,11 +12,15 @@ export const ScheduleModel = DbService.sequelize.define(
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    start_date: {
+    start_time: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    end_date: {
+    end_time: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    release_date: {
       type: DataTypes.DATE,
       allowNull: false,
     },
