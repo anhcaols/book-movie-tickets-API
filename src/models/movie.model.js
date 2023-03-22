@@ -20,7 +20,7 @@ export const MovieModel = DbService.sequelize.define(
       allowNull: false,
     },
     duration: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     release_date: {
@@ -48,11 +48,11 @@ export const MovieModel = DbService.sequelize.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     age: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     image: {

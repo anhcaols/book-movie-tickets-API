@@ -1,5 +1,6 @@
 import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
+import { RoomModel } from './room.model.js';
 
 export const ScheduleModel = DbService.sequelize.define(
   'schedules',
@@ -11,11 +12,11 @@ export const ScheduleModel = DbService.sequelize.define(
       primaryKey: true,
     },
     movie_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     room_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     start_time: {
@@ -35,3 +36,6 @@ export const ScheduleModel = DbService.sequelize.define(
     timestamps: false,
   }
 );
+
+ScheduleModel.belongsTo(RoomModel, { foreignKey: 'room_id' });
+RoomModel.hasMany(ScheduleModel, { foreignKey: 'room_id' });

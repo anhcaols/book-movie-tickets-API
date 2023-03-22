@@ -15,11 +15,11 @@ export const RoomModel = DbService.sequelize.define(
       allowNull: false,
     },
     cinema_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     row_number: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     column_number: {

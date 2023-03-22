@@ -11,7 +11,7 @@ export const OrderModel = DbService.sequelize.define(
       primaryKey: true,
     },
     user_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     order_date: {
@@ -23,11 +23,11 @@ export const OrderModel = DbService.sequelize.define(
       allowNull: false,
     },
     ticket_number: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     seat: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     cinema: {

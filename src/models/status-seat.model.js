@@ -1,7 +1,9 @@
 import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
+import { ScheduleModel } from './schedule.model.js';
+import { SeatModel } from './seat.model.js';
 
-export const SeatModel = DbService.sequelize.define(
+export const StatusSeatModel = DbService.sequelize.define(
   'status_seat',
   {
     id: {
@@ -10,24 +12,12 @@ export const SeatModel = DbService.sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    room_id: {
-      type: DataTypes.NUMBER,
+    seat_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    row_position: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
-    },
-    column_position: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
-    },
-    status: {
-      type: DataTypes.NUMBER,
-      allowNull: false,
-    },
-    price: {
-      type: DataTypes.DECIMAL(10, 2),
+    schedule_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
@@ -35,3 +25,9 @@ export const SeatModel = DbService.sequelize.define(
     timestamps: false,
   }
 );
+
+StatusSeatModel.belongsTo(ScheduleModel, { foreignKey: 'ScheduleID' });
+ScheduleModel.hasMany(StatusSeatModel, { foreignKey: 'ScheduleID' });
+
+StatusSeatModel.belongsTo(SeatModel, { foreignKey: 'SeatID' });
+SeatModel.hasMany(StatusSeatModel, { foreignKey: 'SeatID' });
