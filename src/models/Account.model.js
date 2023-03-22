@@ -4,6 +4,12 @@ import { DataTypes } from 'sequelize';
 export const AccountModel = DbService.sequelize.define(
   'accounts',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     full_name: {
       type: DataTypes.STRING,
       allowNull: true,

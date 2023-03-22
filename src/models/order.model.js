@@ -4,6 +4,12 @@ import { DataTypes } from 'sequelize';
 export const OrderModel = DbService.sequelize.define(
   'orders',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     user_id: {
       type: DataTypes.NUMBER,
       allowNull: false,

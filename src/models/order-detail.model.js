@@ -4,6 +4,12 @@ import { DataTypes } from 'sequelize';
 export const TicketModel = DbService.sequelize.define(
   'order_detail',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     food_id: {
       type: DataTypes.NUMBER,
       allowNull: false,

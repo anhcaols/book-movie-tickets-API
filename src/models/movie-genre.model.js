@@ -6,6 +6,12 @@ import { GenresModel } from './genre.model.js';
 export const MovieGenreModel = DbService.sequelize.define(
   'movie_genres',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     movie_id: {
       type: DataTypes.NUMBER,
       allowNull: false,

@@ -3,6 +3,12 @@ import { DataTypes } from 'sequelize';
 import { AccountModel } from './account.model.js';
 
 export const RatingModel = DbService.sequelize.define('ratings', {
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true,
+  },
   user_id: {
     type: DataTypes.NUMBER,
     allowNull: false,

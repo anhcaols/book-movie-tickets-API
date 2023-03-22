@@ -5,6 +5,12 @@ import { RoomModel } from './room.model.js';
 export const SeatModel = DbService.sequelize.define(
   'seats',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     room_id: {
       type: DataTypes.NUMBER,
       allowNull: false,

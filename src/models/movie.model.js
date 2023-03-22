@@ -4,6 +4,12 @@ import { DataTypes } from 'sequelize';
 export const MovieModel = DbService.sequelize.define(
   'movies',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
