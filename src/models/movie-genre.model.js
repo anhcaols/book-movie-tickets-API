@@ -13,11 +13,11 @@ export const MovieGenreModel = DbService.sequelize.define(
       primaryKey: true,
     },
     movie_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     genre_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },

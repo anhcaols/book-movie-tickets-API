@@ -11,7 +11,7 @@ export const TicketModel = DbService.sequelize.define(
       primaryKey: true,
     },
     name: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     price: {
