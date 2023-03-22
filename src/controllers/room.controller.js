@@ -1,6 +1,6 @@
 import { RoomSchema } from '../dto/room.js';
-import { RoomService } from '../services/room.service.js';
-import { SeatService } from '../services/seat.service.js';
+import { roomsService } from '../services/room.service.js';
+import { seatsService } from '../services/seat.service.js';
 
 export const createRoomController = async (req, res, next) => {
   try {
@@ -12,7 +12,7 @@ export const createRoomController = async (req, res, next) => {
       });
     }
 
-    const newRoom = await RoomService.createRoom(value);
+    const newRoom = await roomsService.createRoom(value);
     const seats = [];
     for (let i = 1; i <= value.row_number; i++) {
       for (let j = 1; j <= value.column_number; j++) {
@@ -25,7 +25,7 @@ export const createRoomController = async (req, res, next) => {
         });
       }
     }
-    await SeatService.createSeat(seats);
+    await seatsService.createSeat(seats);
 
     res.json({ message: 'Create room successfully', success: true });
   } catch (e) {

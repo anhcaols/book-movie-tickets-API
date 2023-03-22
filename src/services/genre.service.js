@@ -1,7 +1,7 @@
 import { GenresModel } from '../models/genre.model.js';
 
-export class GenresService {
-  static async getGenreById(genreId) {
+export class GenreService {
+  async getGenreById(genreId) {
     return await GenresModel.findOne({
       where: {
         id: genreId,
@@ -9,11 +9,11 @@ export class GenresService {
     });
   }
 
-  static async createGenre(genre) {
+  async createGenre(genre) {
     await GenresModel.create(genre);
   }
 
-  static async deleteGenre(genreId) {
+  async deleteGenre(genreId) {
     const genre = await GenresModel.findOne({
       where: { id: genreId },
     });
@@ -22,9 +22,11 @@ export class GenresService {
     }
   }
 
-  static async updateGenre(newGenre, genreId) {
+  async updateGenre(newGenre, genreId) {
     return await GenresModel.update(newGenre, {
       where: { id: genreId },
     });
   }
 }
+
+export const genresServiceService = new GenreService();

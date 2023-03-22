@@ -1,11 +1,11 @@
 import { AccountModel } from '../models/account.model.js';
 
 export class AccountService {
-  static async createAccount(account) {
+  async createAccount(account) {
     await AccountModel.create(account);
   }
 
-  static async getAccountByEmail(email) {
+  async getAccountByEmail(email) {
     return await AccountModel.findOne({
       where: {
         email: email,
@@ -13,7 +13,7 @@ export class AccountService {
     });
   }
 
-  static async getAccountById(id) {
+  async getAccountById(id) {
     return await AccountModel.findOne({
       where: {
         id,
@@ -21,3 +21,5 @@ export class AccountService {
     });
   }
 }
+
+export const accountsService = new AccountService();

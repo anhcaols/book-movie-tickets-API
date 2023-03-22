@@ -3,7 +3,7 @@ import { MovieGenreModel } from '../models/movie-genre.model.js';
 import { MovieModel } from '../models/movie.model.js';
 
 export class MovieService {
-  static async getMovies(offset, limit, type) {
+  async getMovies(offset, limit, type) {
     let condition = {};
     if (type == 'nowShowing') {
       condition = {
@@ -27,7 +27,7 @@ export class MovieService {
     });
   }
 
-  static async getMoviesCount(type) {
+  async getMoviesCount(type) {
     let condition = {};
     if (type == 'nowShowing') {
       condition = {
@@ -44,7 +44,7 @@ export class MovieService {
     });
   }
 
-  static async getMovieById(movieId) {
+  async getMovieById(movieId) {
     return await MovieModel.findOne({
       where: {
         id: movieId,
@@ -52,7 +52,7 @@ export class MovieService {
     });
   }
 
-  static async getMovieBySlug(slug) {
+  async getMovieBySlug(slug) {
     return await MovieModel.findAll({
       where: {
         slug: slug,
@@ -65,11 +65,11 @@ export class MovieService {
     });
   }
 
-  static async createMovie(movie) {
+  async createMovie(movie) {
     return await MovieModel.create(movie);
   }
 
-  static async deleteMovie(movieId) {
+  async deleteMovie(movieId) {
     const movie = await MovieModel.findOne({
       where: { id: movieId },
     });
@@ -78,9 +78,11 @@ export class MovieService {
     }
   }
 
-  static async updateMovie(newMovie, movieId) {
+  async updateMovie(newMovie, movieId) {
     return await MovieModel.update(newMovie, {
       where: { id: movieId },
     });
   }
 }
+
+export const moviesService = new MovieService();

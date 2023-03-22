@@ -2,7 +2,7 @@ import { AccountModel } from '../models/account.model.js';
 import { RatingModel } from '../models/rating.model.js';
 
 export class RatingService {
-  static async getRatingById(ratingId) {
+  async getRatingById(ratingId) {
     return await RatingModel.findOne({
       where: {
         id: ratingId,
@@ -10,7 +10,7 @@ export class RatingService {
     });
   }
 
-  static async getRatings(offset, limit, movieId) {
+  async getRatings(offset, limit, movieId) {
     return await RatingModel.findAll({
       offset,
       limit,
@@ -20,7 +20,7 @@ export class RatingService {
     });
   }
 
-  static async getRatesByMovie(movieId) {
+  async getRatesByMovie(movieId) {
     return await RatingModel.findAll({
       where: {
         movie_id: movieId,
@@ -28,7 +28,7 @@ export class RatingService {
     });
   }
 
-  static async getRatingsCount(movieId) {
+  async getRatingsCount(movieId) {
     return await RatingModel.count({
       where: {
         movie_id: movieId,
@@ -36,11 +36,11 @@ export class RatingService {
     });
   }
 
-  static async createRating(rating) {
+  async createRating(rating) {
     await RatingModel.create(rating);
   }
 
-  static async existingRating(movieId, userId) {
+  async existingRating(movieId, userId) {
     return await RatingModel.findOne({
       where: {
         movie_id: movieId,
@@ -49,7 +49,7 @@ export class RatingService {
     });
   }
 
-  static async deleteRating(ratingId) {
+  async deleteRating(ratingId) {
     const rating = await RatingModel.findOne({
       where: { id: ratingId },
     });
@@ -58,9 +58,11 @@ export class RatingService {
     }
   }
 
-  static async updateRating(newRating, ratingId) {
+  async updateRating(newRating, ratingId) {
     return await RatingModel.update(newRating, {
       where: { id: ratingId },
     });
   }
 }
+
+export const ratingsService = new RatingService();

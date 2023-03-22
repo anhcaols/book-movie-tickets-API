@@ -1,4 +1,4 @@
-import { AccountService } from '../services/account.service.js';
+import { accountsService } from '../services/account.service.js';
 import { hashPassword, verifyPassword } from '../utils/password.js';
 import { generateToken } from '../utils/jwt.js';
 import { Role } from '../enums/auth.enum.js';
@@ -17,7 +17,7 @@ export const createAccountController = async (req, res, next) => {
     value.role = Role.USER;
     value.password = await hashPassword(value.password);
 
-    await AccountService.createAccount({ ...value });
+    await accountsService.createAccount({ ...value });
 
     res.json({ message: 'Register account successfully', success: true });
   } catch (e) {
@@ -35,7 +35,7 @@ export const loginAccountController = async (req, res, next) => {
       });
     }
 
-    const account = await AccountService.getAccountByEmail(value.email);
+    const account = await accountsService.getAccountByEmail(value.email);
     if (!account) {
       return res.status(404).json({
         message: 'Account does not found',

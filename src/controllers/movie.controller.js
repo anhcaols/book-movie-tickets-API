@@ -1,9 +1,9 @@
 import { MovieSchema } from '../dto/movie.js';
-import { MovieService } from '../services/movie.service.js';
-import { MovieGenreService } from '../services/movie-genre.service.js';
+import { moviesService } from '../services/movie.service.js';
+import { movieGenreServiceService } from '../services/movie-genre.service.js';
 import fs from 'fs';
 import slugify from 'slugify';
-import { RatingService } from '../services/rating.service.js';
+import { ratingsService } from '../services/rating.service.js';
 
 export const createMovieController = async (req, res, next) => {
   try {
@@ -24,9 +24,9 @@ export const createMovieController = async (req, res, next) => {
       trim: true,
     });
     const genres = value.genre_id.split(',');
-    const response = await MovieService.createMovie({ ...value, image: req.file.filename, slug });
+    const response = await moviesService.createMovie({ ...value, image: req.file.filename, slug });
     genres.map(async (genre) => {
-      await MovieGenreService.createMovieGenre({ movie_id: response.dataValues.id, genre_id: Number(genre) });
+      await movieGenreServiceService.createMovieGenre({ movie_id: response.dataValues.id, genre_id: Number(genre) });
     });
 
     res.json({ message: 'Create movie successfully', success: true });
@@ -38,7 +38,7 @@ export const createMovieController = async (req, res, next) => {
 export const deleteMovieController = async (req, res, next) => {
   try {
     const movieId = req.params.id;
-    const movie = await MovieService.getMovieById(movieId);
+    const movie = await moviesService.getMovieById(movieId);
     if (!movie) {
       return res.status(404).json({
         message: 'Movie does not found',
@@ -54,8 +54,8 @@ export const deleteMovieController = async (req, res, next) => {
       });
     }
 
-    await MovieService.deleteMovie(movieId);
-    await MovieGenreService.deleteMovieGenre(movieId);
+    await moviesService.deleteMovie(movieId);
+    await movieGenreServiceService.deleteMovieGenre(movieId);
 
     res.json({ message: 'Delete movie successfully', success: true });
   } catch (e) {
@@ -83,7 +83,7 @@ export const updateMovieController = async (req, res, next) => {
     });
 
     const movieId = req.params.id;
-    const movie = await MovieService.getMovieById(movieId);
+    const movie = await moviesService.getMovieById(movieId);
     if (!movie) {
       // neu khong co phim thi xoa anh di
       const imageName = req.file.filename;
@@ -107,7 +107,7 @@ export const updateMovieController = async (req, res, next) => {
       }
     });
 
-    await MovieService.updateMovie({ ...value, image: req.file.filename, slug }, movieId);
+    await moviesService.updateMovie({ ...value, image: req.file.filename, slug }, movieId);
     res.json({ message: 'Update genre successfully', success: true });
   } catch (e) {
     next(e);
@@ -119,8 +119,8 @@ export const getMoviesController = async (req, res, next) => {
   const page = req.query.page || 1;
   const offset = (page - 1) * limit;
 
-  const movies = await MovieService.getMovies(offset, limit);
-  const totalDocs = await MovieService.getMoviesCount();
+  const movies = await moviesService.getMovies(offset, limit);
+  const totalDocs = await moviesService.getMoviesCount();
   const totalPages = Math.ceil(totalDocs / limit);
 
   const hasPrevPage = page > 1;
@@ -164,8 +164,8 @@ export const getNowShowingMoviesController = async (req, res, next) => {
   const page = req.query.page || 1;
   const offset = (page - 1) * limit;
 
-  const nowShowingMovies = await MovieService.getMovies(offset, limit, 'nowShowing');
-  const totalDocs = await MovieService.getMoviesCount('nowShowing');
+  const nowShowingMovies = await moviesService.getMovies(offset, limit, 'nowShowing');
+  const totalDocs = await moviesService.getMoviesCount('nowShowing');
   const totalPages = Math.ceil(totalDocs / limit);
 
   const hasPrevPage = page > 1;
@@ -209,8 +209,8 @@ export const getComingSoonMoviesController = async (req, res, next) => {
   const page = req.query.page || 1;
   const offset = (page - 1) * limit;
 
-  const comingSoonMovies = await MovieService.getMovies(offset, limit, 'comingSoon');
-  const totalDocs = await MovieService.getMoviesCount('comingSoon');
+  const comingSoonMovies = await moviesService.getMovies(offset, limit, 'comingSoon');
+  const totalDocs = await moviesService.getMoviesCount('comingSoon');
   const totalPages = Math.ceil(totalDocs / limit);
 
   const hasPrevPage = page > 1;
@@ -253,7 +253,7 @@ export const getComingSoonMoviesController = async (req, res, next) => {
 export const getMovieController = async (req, res, next) => {
   const slug = req.params.slug;
 
-  const movie = await MovieService.getMovieBySlug(slug);
+  const movie = await moviesService.getMovieBySlug(slug);
   if (!movie) {
     return res.status(404).json({
       message: 'Movie does not found',
@@ -288,7 +288,7 @@ export const getMovieController = async (req, res, next) => {
 
 export const handleGetScoreRate = async (movieId) => {
   let sumRate = 0;
-  const rates = await RatingService.getRatesByMovie(movieId);
+  const rates = await ratingsService.getRatesByMovie(movieId);
   rates.map((rate) => {
     sumRate += rate.dataValues.rate;
   });

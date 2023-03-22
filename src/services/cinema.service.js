@@ -1,7 +1,7 @@
 import { CinemaModel } from '../models/cinema.model.js';
 
 export class CinemaService {
-  static async getCinemaById(cinemaId) {
+  async getCinemaById(cinemaId) {
     return await CinemaModel.findOne({
       where: {
         id: cinemaId,
@@ -9,11 +9,11 @@ export class CinemaService {
     });
   }
 
-  static async createCinema(cinema) {
+  async createCinema(cinema) {
     await CinemaModel.create(cinema);
   }
 
-  static async deleteCinema(cinemaId) {
+  async deleteCinema(cinemaId) {
     const cinema = await CinemaModel.findOne({
       where: { id: cinemaId },
     });
@@ -22,9 +22,11 @@ export class CinemaService {
     }
   }
 
-  static async updateCinema(newCinema, cinemaId) {
+  async updateCinema(newCinema, cinemaId) {
     return await CinemaModel.update(newCinema, {
       where: { id: cinemaId },
     });
   }
 }
+
+export const cinemasService = new CinemaService();

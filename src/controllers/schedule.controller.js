@@ -1,12 +1,12 @@
 import { ScheduleSchema } from '../dto/schedule.js';
 import { schedulesService } from '../services/schedule.service.js';
-import { MovieService } from '../services/movie.service.js';
+import { moviesService } from '../services/movie.service.js';
 
 export const createScheduleController = async (req, res, next) => {
   try {
     const { error, value } = ScheduleSchema.validate(req.body);
 
-    const movie = await MovieService.getMovieById(value.movie_id);
+    const movie = await moviesService.getMovieById(value.movie_id);
     if (!movie) {
       return res.status(404).json({
         message: 'Movie does not found',

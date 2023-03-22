@@ -1,7 +1,7 @@
 import { MovieGenreModel } from '../models/movie-genre.model.js';
 
 export class MovieGenreService {
-  static async getMovieGenreById(movieId) {
+  async getMovieGenreById(movieId) {
     return await MovieGenreModel.findAll({
       where: {
         movie_id: movieId,
@@ -9,11 +9,11 @@ export class MovieGenreService {
     });
   }
 
-  static async createMovieGenre(movieGenre) {
+  async createMovieGenre(movieGenre) {
     await MovieGenreModel.create(movieGenre);
   }
 
-  static async deleteMovieGenre(movieId) {
+  async deleteMovieGenre(movieId) {
     const movieGenres = await MovieGenreModel.findAll({
       where: { movie_id: movieId },
     });
@@ -22,7 +22,7 @@ export class MovieGenreService {
     });
   }
 
-  static async updateMovieGenre(newMovieGenre) {
+  async updateMovieGenre(newMovieGenre) {
     console.log('newMovieGenre', newMovieGenre);
     const movieGenres = await MovieGenreModel.findAll({
       where: {
@@ -39,3 +39,5 @@ export class MovieGenreService {
     });
   }
 }
+
+export const movieGenreServiceService = new MovieGenreService();

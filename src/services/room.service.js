@@ -1,7 +1,9 @@
 import { RoomModel } from '../models/room.model.js';
 
 export class RoomService {
-  static async createRoom(room) {
+  async createRoom(room) {
     return await RoomModel.create(room);
   }
 }
+
+export const roomsService = new RoomService();

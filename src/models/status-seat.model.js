@@ -20,14 +20,18 @@ export const StatusSeatModel = DbService.sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     timestamps: false,
   }
 );
 
-StatusSeatModel.belongsTo(ScheduleModel, { foreignKey: 'ScheduleID' });
-ScheduleModel.hasMany(StatusSeatModel, { foreignKey: 'ScheduleID' });
+StatusSeatModel.belongsTo(ScheduleModel, { foreignKey: 'schedule_id' });
+ScheduleModel.hasMany(StatusSeatModel, { foreignKey: 'schedule_id' });
 
-StatusSeatModel.belongsTo(SeatModel, { foreignKey: 'SeatID' });
-SeatModel.hasMany(StatusSeatModel, { foreignKey: 'SeatID' });
+StatusSeatModel.belongsTo(SeatModel, { foreignKey: 'seat_id' });
+SeatModel.hasMany(StatusSeatModel, { foreignKey: 'seat_id' });

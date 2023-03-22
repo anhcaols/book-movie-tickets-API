@@ -1,5 +1,5 @@
 import { GenreSchema } from '../dto/genre.js';
-import { GenresService } from '../services/genre.service.js';
+import { genresServiceService } from '../services/genre.service.js';
 
 export const createGenderController = async (req, res, next) => {
   try {
@@ -11,7 +11,7 @@ export const createGenderController = async (req, res, next) => {
       });
     }
 
-    await GenresService.createGenre(value);
+    await genresServiceService.createGenre(value);
     res.json({ message: 'Create genre successfully', success: true });
   } catch (e) {
     next(e);
@@ -21,7 +21,7 @@ export const createGenderController = async (req, res, next) => {
 export const deleteGenderController = async (req, res, next) => {
   try {
     const genreId = req.params.id;
-    const genre = await GenresService.getGenreById(genreId);
+    const genre = await genresServiceService.getGenreById(genreId);
     if (!genre) {
       return res.status(404).json({
         message: 'Genre does not found',
@@ -29,7 +29,7 @@ export const deleteGenderController = async (req, res, next) => {
       });
     }
 
-    await GenresService.deleteGenre(genreId);
+    await genresServiceService.deleteGenre(genreId);
     res.json({ message: 'Delete genre successfully', success: true });
   } catch (e) {
     next(e);
@@ -46,7 +46,7 @@ export const updateGenderController = async (req, res, next) => {
     }
 
     const genreId = req.params.id;
-    const genre = await GenresService.getGenreById(genreId);
+    const genre = await genresServiceService.getGenreById(genreId);
     if (!genre) {
       return res.status(404).json({
         message: 'Genre does not found',
@@ -54,7 +54,7 @@ export const updateGenderController = async (req, res, next) => {
       });
     }
 
-    await GenresService.updateGenre(value, genreId);
+    await genresServiceService.updateGenre(value, genreId);
     res.json({ message: 'Update genre successfully', success: true });
   } catch (e) {
     next(e);
