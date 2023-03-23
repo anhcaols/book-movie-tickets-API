@@ -4,6 +4,13 @@ export class RoomService {
   async createRoom(room) {
     return await RoomModel.create(room);
   }
+
+  async deleteRoom(roomId) {
+    const room = await RoomModel.findByPk(roomId);
+    if (room) {
+      await room.destroy();
+    }
+  }
 }
 
 export const roomsService = new RoomService();
