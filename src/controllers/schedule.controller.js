@@ -3,6 +3,7 @@ import { schedulesService } from '../services/schedule.service.js';
 import { moviesService } from '../services/movie.service.js';
 import { roomsService } from '../services/room.service.js';
 import { cinemasService } from '../services/cinema.service.js';
+import { statusSeatsService } from '../services/status-seat.service.js';
 
 export const createScheduleController = async (req, res, next) => {
   try {
@@ -15,7 +16,13 @@ export const createScheduleController = async (req, res, next) => {
         status: 404,
       });
     }
-
+    const schedule = await schedulesService.existingSchedule(value.room_id, value.start_time, value.end_time);
+    if (schedule) {
+      return res.status(404).json({
+        message: 'Existing schedule',
+        status: 404,
+      });
+    }
     await schedulesService.createSchedule({ ...value, release_date: movie.dataValues.release_date });
 
     res.json({ message: 'Create schedule successfully', success: true });
@@ -81,6 +88,29 @@ export const getAllScheduleController = async (req, res, next) => {
         status: 400,
       });
     }
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const deleteScheduleController = async (req, res, next) => {
+  try {
+    const scheduleId = req.params.id;
+    const schedule = await statusSeatsService.getAllStatusSeat(scheduleId);
+    console.log(schedule);
+    if (schedule.length === 0) {
+      return res.status(404).json({
+        message: 'Schedule does not found',
+        status: 404,
+      });
+    }
+
+    await statusSeatsService.deleteStatusSeatBySchedule(scheduleId);
+    await schedulesService.deleteSchedule(scheduleId);
+    res.json({
+      message: 'Delete schedules successfully',
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

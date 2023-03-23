@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { ScheduleModel } from '../models/schedule.model.js';
 
 export class ScheduleService {
@@ -15,6 +16,33 @@ export class ScheduleService {
 
   async createSchedule(schedule) {
     await ScheduleModel.create(schedule);
+  }
+
+  async deleteSchedule(scheduleId) {
+    const schedule = await ScheduleModel.findByPk(scheduleId);
+    if (schedule) {
+      await schedule.destroy();
+    }
+  }
+
+  async existingSchedule(roomId, startTime, endTime) {
+    return await ScheduleModel.findOne({
+      where: {
+        room_id: roomId,
+        [Op.or]: [
+          {
+            start_time: {
+              [Op.between]: [startTime, endTime],
+            },
+          },
+          {
+            end_time: {
+              [Op.between]: [startTime, endTime],
+            },
+          },
+        ],
+      },
+    });
   }
 }
 

@@ -20,7 +20,9 @@ export const createStatusSeatController = async (req, res, next) => {
 
     for (const seat of seats) {
       for (const schedule of schedules) {
+        // Check if the current seat has an existing status seat for the current schedule only
         const existingStatusSeat = await statusSeatsService.getStatusSeat(seat.dataValues.id, schedule.dataValues.id);
+
         if (!existingStatusSeat) {
           const newStatus = await statusSeatsService.createStatusSeat({
             seat_id: seat.dataValues.id,
@@ -28,12 +30,6 @@ export const createStatusSeatController = async (req, res, next) => {
             status: 'available',
           });
           statusSeats.push(newStatus);
-        } else {
-          return res.status(404).json({
-            message: 'Existing state seat',
-            status: 404,
-            success: false,
-          });
         }
       }
     }

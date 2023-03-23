@@ -8,11 +8,11 @@ export function generateToken(email) {
     email,
   };
   const accessToken = jwt.sign(payload, `${GlobalConfig.secretKey}`, {
-    expiresIn: '2h',
+    expiresIn: '10h',
   });
 
   const refreshToken = jwt.sign(payload, `${GlobalConfig.secretKey}`, {
-    expiresIn: '2h',
+    expiresIn: '10h',
   });
   return { accessToken, refreshToken };
 }

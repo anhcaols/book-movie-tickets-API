@@ -21,6 +21,15 @@ export class StatusSeatService {
       }
     );
   }
+
+  async deleteStatusSeatBySchedule(scheduleId) {
+    const statusSeat = await StatusSeatModel.findAll({
+      where: { schedule_id: scheduleId },
+    });
+    statusSeat.map(async (scheduleId) => {
+      await scheduleId.destroy();
+    });
+  }
 }
 
 export const statusSeatsService = new StatusSeatService();
