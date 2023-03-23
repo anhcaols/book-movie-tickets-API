@@ -9,6 +9,10 @@ export class ScheduleService {
     return await ScheduleModel.findByPk(scheduleId);
   }
 
+  async getAllSchedules(roomId, movieId) {
+    return await ScheduleModel.findAll({ where: { room_id: roomId, movie_id: movieId } });
+  }
+
   async createSchedule(schedule) {
     await ScheduleModel.create(schedule);
   }
