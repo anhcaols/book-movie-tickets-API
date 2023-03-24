@@ -44,6 +44,12 @@ export class ScheduleService {
       },
     });
   }
+
+  async updateSchedule(newSchedule, scheduleId) {
+    return await ScheduleModel.update(newSchedule, {
+      where: { id: scheduleId },
+    });
+  }
 }
 
 export const schedulesService = new ScheduleService();

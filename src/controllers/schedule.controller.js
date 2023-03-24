@@ -8,6 +8,12 @@ import { statusSeatsService } from '../services/status-seat.service.js';
 export const createScheduleController = async (req, res, next) => {
   try {
     const { error, value } = ScheduleSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
 
     const movie = await moviesService.getMovieById(value.movie_id);
     if (!movie) {
@@ -26,12 +32,6 @@ export const createScheduleController = async (req, res, next) => {
     await schedulesService.createSchedule({ ...value, release_date: movie.dataValues.release_date });
 
     res.json({ message: 'Create schedule successfully', success: true });
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-        status: 400,
-      });
-    }
   } catch (e) {
     next(e);
   }
@@ -96,9 +96,8 @@ export const getAllScheduleController = async (req, res, next) => {
 export const deleteScheduleController = async (req, res, next) => {
   try {
     const scheduleId = req.params.id;
-    const schedule = await statusSeatsService.getAllStatusSeat(scheduleId);
-    console.log(schedule);
-    if (schedule.length === 0) {
+    const schedule = await schedulesService.getScheduleById(scheduleId);
+    if (!schedule) {
       return res.status(404).json({
         message: 'Schedule does not found',
         status: 404,
@@ -108,7 +107,36 @@ export const deleteScheduleController = async (req, res, next) => {
     await statusSeatsService.deleteStatusSeatBySchedule(scheduleId);
     await schedulesService.deleteSchedule(scheduleId);
     res.json({
-      message: 'Delete schedules successfully',
+      message: 'Delete schedule successfully',
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const updateScheduleController = async (req, res, next) => {
+  try {
+    const { error, value } = ScheduleSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
+
+    const scheduleId = req.params.id;
+    const schedule = await schedulesService.getScheduleById(scheduleId);
+    if (!schedule) {
+      return res.status(404).json({
+        message: 'Schedule does not found',
+        status: 404,
+      });
+    }
+
+    await schedulesService.updateSchedule(value, scheduleId);
+    res.json({
+      message: 'Update schedule successfully',
       success: true,
     });
   } catch (e) {
