@@ -12,22 +12,26 @@ export const createRoomController = async (req, res, next) => {
       });
     }
 
-    const newRoom = await roomsService.createRoom(value);
-    const seats = [];
-    for (let i = 1; i <= value.row_number; i++) {
-      for (let j = 1; j <= value.column_number; j++) {
-        seats.push({
-          room_id: newRoom.dataValues.id,
-          row_position: i,
-          column_position: j,
-          status: 0,
-          price: 85000,
-        });
-      }
-    }
-    await seatsService.createSeat(seats);
-
+    await roomsService.createRoom(value);
     res.json({ message: 'Create room successfully', success: true });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const deleteRoomController = async (req, res, next) => {
+  try {
+    const roomId = req.params.id;
+    const room = await roomsService.getRoom(roomId);
+    if (!room) {
+      return res.status(404).json({
+        message: 'Room does not found',
+        status: 404,
+      });
+    }
+    await seatsService.deleteSeat(roomId);
+    await roomsService.deleteRoom(roomId);
+    res.json({ message: 'Delete room successfully', success: true });
   } catch (e) {
     next(e);
   }

@@ -6,6 +6,7 @@ import { movieRouter } from './movie.route.js';
 import { ratingRouter } from './rating.route.js';
 import { roomRouter } from './room.route.js';
 import { scheduleRouter } from './schedule.route.js';
+import { seatRouter } from './seat.route.js';
 import { statusSeatRouter } from './status-seat.route.js';
 
 export const mainRouter = express.Router();
@@ -22,3 +23,4 @@ mainRouter.use('/api', ratingRouter);
 mainRouter.use('/api', roomRouter);
 mainRouter.use('/api', scheduleRouter);
 mainRouter.use('/api', statusSeatRouter);
+mainRouter.use('/api', seatRouter);
