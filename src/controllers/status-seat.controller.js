@@ -16,8 +16,21 @@ export const createStatusSeatController = async (req, res, next) => {
     const seats = await seatsService.getAllSeatsByRoom(value.room_id);
     const schedules = await schedulesService.getScheduleByRoom(value.room_id);
 
-    const statusSeats = [];
+    if (seats.length === 0) {
+      return res.json({
+        message: 'Seats not found',
+        success: false,
+      });
+    }
 
+    if (schedules.length === 0) {
+      return res.json({
+        message: 'Schedules not found',
+        success: false,
+      });
+    }
+
+    const statusSeats = [];
     for (const seat of seats) {
       for (const schedule of schedules) {
         // Check if the current seat has an existing status seat for the current schedule only
@@ -33,6 +46,8 @@ export const createStatusSeatController = async (req, res, next) => {
         }
       }
     }
+
+    console.log(statusSeats);
 
     res.json({ message: 'Create status seat successfully', success: true });
   } catch (e) {

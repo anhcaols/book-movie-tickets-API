@@ -37,5 +37,5 @@ export const SeatModel = DbService.sequelize.define(
 RoomModel.hasMany(SeatModel, { foreignKey: 'room_id' });
 SeatModel.belongsTo(RoomModel, { foreignKey: 'room_id' });
 
-// SeatModel.hasMany(SeatTypeModel, { foreignKey: 'seat_type_id' });
-// SeatTypeModel.belongsTo(SeatModel, { foreignKey: 'seat_type_id' });
+SeatModel.belongsTo(SeatTypeModel, { foreignKey: 'seat_type_id' });
+SeatTypeModel.hasMany(SeatModel, { foreignKey: 'seat_type_id' });
