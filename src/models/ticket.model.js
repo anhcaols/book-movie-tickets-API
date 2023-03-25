@@ -1,5 +1,8 @@
 import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
+import { SeatModel } from './seat.model.js';
+import { ScheduleModel } from './schedule.model.js';
+import { OrderModel } from './order.model.js';
 
 export const TicketModel = DbService.sequelize.define(
   'tickets',
@@ -27,3 +30,7 @@ export const TicketModel = DbService.sequelize.define(
     timestamps: false,
   }
 );
+
+TicketModel.belongsTo(SeatModel, { foreignKey: 'seat_id' });
+TicketModel.belongsTo(ScheduleModel, { foreignKey: 'schedule_id' });
+TicketModel.belongsTo(OrderModel, { foreignKey: 'order_id' });

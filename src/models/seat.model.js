@@ -1,6 +1,7 @@
 import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
 import { RoomModel } from './room.model.js';
+import { SeatTypeModel } from './seat-type.model.js';
 
 export const SeatModel = DbService.sequelize.define(
   'seats',
@@ -10,6 +11,10 @@ export const SeatModel = DbService.sequelize.define(
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
+    },
+    seat_type_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     room_id: {
       type: DataTypes.INTEGER,
@@ -23,10 +28,6 @@ export const SeatModel = DbService.sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    price: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-    },
   },
   {
     timestamps: false,
@@ -35,3 +36,6 @@ export const SeatModel = DbService.sequelize.define(
 
 RoomModel.hasMany(SeatModel, { foreignKey: 'room_id' });
 SeatModel.belongsTo(RoomModel, { foreignKey: 'room_id' });
+
+// SeatModel.hasMany(SeatTypeModel, { foreignKey: 'seat_type_id' });
+// SeatTypeModel.belongsTo(SeatModel, { foreignKey: 'seat_type_id' });

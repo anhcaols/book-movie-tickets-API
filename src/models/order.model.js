@@ -18,30 +18,6 @@ export const OrderModel = DbService.sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
-    movie: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    ticket_number: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    seat: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    cinema: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    food: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    schedule: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     total_amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,

@@ -1,8 +1,8 @@
 import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
 
-export const FoodModel = DbService.sequelize.define(
-  'food',
+export const SeatTypeModel = DbService.sequelize.define(
+  'seat_types',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -10,20 +10,12 @@ export const FoodModel = DbService.sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    name: {
-      type: DataTypes.INTEGER,
+    type: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     price: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    image: {
-      type: DataTypes.STRING,
       allowNull: false,
     },
   },

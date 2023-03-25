@@ -1,7 +1,9 @@
 import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
+import { OrderModel } from './order.model.js';
+import { FoodModel } from './food.model.js';
 
-export const TicketModel = DbService.sequelize.define(
+export const OrderDetailModel = DbService.sequelize.define(
   'order_detail',
   {
     id: {
@@ -31,3 +33,9 @@ export const TicketModel = DbService.sequelize.define(
     timestamps: false,
   }
 );
+
+OrderModel.hasMany(OrderDetailModel);
+OrderDetailModel.belongsTo(OrderModel);
+
+FoodModel.hasMany(OrderDetailModel);
+OrderDetailModel.belongsTo(FoodModel);
