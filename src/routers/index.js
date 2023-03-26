@@ -1,6 +1,7 @@
 import express from 'express';
 import { accountRouter } from './account.route.js';
 import { cinemaRouter } from './cinema.route.js';
+import { foodRouter } from './food.route.js';
 import { genreRouter } from './genre.route.js';
 import { movieRouter } from './movie.route.js';
 import { ratingRouter } from './rating.route.js';
@@ -27,3 +28,4 @@ mainRouter.use('/api', statusSeatRouter);
 mainRouter.use('/api', seatRouter);
 mainRouter.use('/api', seatRouter);
 mainRouter.use('/api', seatTypeRouter);
+mainRouter.use('/api', foodRouter);

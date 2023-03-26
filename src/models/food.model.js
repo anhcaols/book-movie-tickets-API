@@ -2,7 +2,7 @@ import { DbService } from '../services/db-service.js';
 import { DataTypes } from 'sequelize';
 
 export const FoodModel = DbService.sequelize.define(
-  'food',
+  'foods',
   {
     id: {
       type: DataTypes.INTEGER,
