@@ -84,8 +84,8 @@ export const updateMovieController = async (req, res, next) => {
 
     const movieId = req.params.id;
     const movie = await moviesService.getMovieById(movieId);
+    // if movie not found then delete image
     if (!movie) {
-      // neu khong co phim thi xoa anh di
       const imageName = req.file.filename;
       if (imageName) {
         fs.unlink(`public/images/${imageName}`, (err) => {
@@ -99,7 +99,7 @@ export const updateMovieController = async (req, res, next) => {
         status: 404,
       });
     }
-    // xoa anh cu khi cap nhat anh moi
+    // Delete image old and insert new image
     const imageName = movie.dataValues.image;
     fs.unlink(`public/images/${imageName}`, (err) => {
       if (err) {

@@ -1,7 +1,7 @@
 import { FoodModel } from '../models/food.model.js';
 
 export class FoodService {
-  async getFood(foodId) {
+  async getFoodById(foodId) {
     return await FoodModel.findByPk(foodId);
   }
 

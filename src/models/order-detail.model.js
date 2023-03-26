@@ -4,7 +4,7 @@ import { OrderModel } from './order.model.js';
 import { FoodModel } from './food.model.js';
 
 export const OrderDetailModel = DbService.sequelize.define(
-  'order_detail',
+  'order_details',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -24,7 +24,7 @@ export const OrderDetailModel = DbService.sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    total_price: {
+    price: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
@@ -34,8 +34,8 @@ export const OrderDetailModel = DbService.sequelize.define(
   }
 );
 
-OrderModel.hasMany(OrderDetailModel);
-OrderDetailModel.belongsTo(OrderModel);
+OrderModel.hasMany(OrderDetailModel, { foreignKey: 'order_id' });
+OrderDetailModel.belongsTo(OrderModel, { foreignKey: 'order_id' });
 
-FoodModel.hasMany(OrderDetailModel);
-OrderDetailModel.belongsTo(FoodModel);
+FoodModel.hasMany(OrderDetailModel, { foreignKey: 'food_id' });
+OrderDetailModel.belongsTo(FoodModel, { foreignKey: 'food_id' });

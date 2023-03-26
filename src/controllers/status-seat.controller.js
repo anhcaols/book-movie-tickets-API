@@ -17,16 +17,16 @@ export const createStatusSeatController = async (req, res, next) => {
     const schedules = await schedulesService.getScheduleByRoom(value.room_id);
 
     if (seats.length === 0) {
-      return res.json({
+      return res.status(404).json({
         message: 'Seats not found',
-        success: false,
+        status: 404,
       });
     }
 
     if (schedules.length === 0) {
-      return res.json({
+      return res.status(404).json({
         message: 'Schedules not found',
-        success: false,
+        status: 404,
       });
     }
 
@@ -46,8 +46,6 @@ export const createStatusSeatController = async (req, res, next) => {
         }
       }
     }
-
-    console.log(statusSeats);
 
     res.json({ message: 'Create status seat successfully', success: true });
   } catch (e) {

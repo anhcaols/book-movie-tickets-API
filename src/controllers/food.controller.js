@@ -22,7 +22,7 @@ export const createFoodController = async (req, res, next) => {
 export const deleteFoodController = async (req, res, next) => {
   try {
     const foodId = req.params.id;
-    const room = await foodsService.getFood(foodId);
+    const room = await foodsService.getFoodById(foodId);
     if (!room) {
       return res.status(404).json({
         message: 'Food does not found',
@@ -56,7 +56,7 @@ export const updateFoodController = async (req, res, next) => {
     }
 
     const foodId = req.params.id;
-    const food = await foodsService.getFood(foodId);
+    const food = await foodsService.getFoodById(foodId);
     if (!food) {
       // nếu không tìm được food thì xóa ảnh đi
       const imageName = req.file.filename;

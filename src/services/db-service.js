@@ -8,6 +8,7 @@ export class DbService {
     host: 'localhost',
     port: 3306,
     dialect: 'mysql',
+    timezone: '+07:00',
   });
 
   static async start() {
@@ -16,7 +17,7 @@ export class DbService {
       .then(() => {
         console.log('Connection has been established successfully.');
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Unable to connect to the database:', err);
       });
 

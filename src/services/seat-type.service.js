@@ -5,10 +5,6 @@ export class SeatTypeService {
     return await SeatTypeModel.findByPk(seatTypeId);
   }
 
-  async getAllSeatTypes() {
-    return await SeatTypeModel.findAll();
-  }
-
   async createSeatType(seatType) {
     return await SeatTypeModel.create(seatType);
   }
