@@ -5,7 +5,7 @@ export class SeatService {
     return await SeatModel.findAll({ where: { room_id: roomId } });
   }
 
-  async getSeat(seatId) {
+  async getSeatById(seatId) {
     return await SeatModel.findByPk(seatId);
   }
 

@@ -22,7 +22,7 @@ export const createRoomController = async (req, res, next) => {
 export const deleteRoomController = async (req, res, next) => {
   try {
     const roomId = req.params.id;
-    const room = await roomsService.getRoom(roomId);
+    const room = await roomsService.getRoomById(roomId);
     if (!room) {
       return res.status(404).json({
         message: 'Room does not found',

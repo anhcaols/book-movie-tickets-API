@@ -5,6 +5,14 @@ export class TicketService {
     return await TicketModel.findByPk(ticketId);
   }
 
+  async getAllTicketsByOrderId(orderId) {
+    return await TicketModel.findAll({
+      where: {
+        order_id: orderId,
+      },
+    });
+  }
+
   async createTicket(ticket) {
     return await TicketModel.bulkCreate(ticket);
   }

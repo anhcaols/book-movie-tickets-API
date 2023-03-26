@@ -5,6 +5,12 @@ export class OrderService {
     return await OrderModel.findByPk(orderId);
   }
 
+  async getAllOrdersByUser(userId) {
+    return await OrderModel.findAll({
+      user_id: userId,
+    });
+  }
+
   async createOrder(order) {
     return await OrderModel.create(order);
   }

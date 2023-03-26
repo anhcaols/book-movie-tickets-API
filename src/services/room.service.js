@@ -1,7 +1,7 @@
 import { RoomModel } from '../models/room.model.js';
 
 export class RoomService {
-  async getRoom(roomId) {
+  async getRoomById(roomId) {
     return await RoomModel.findByPk(roomId);
   }
 

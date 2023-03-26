@@ -49,7 +49,7 @@ export const getAllScheduleController = async (req, res, next) => {
       });
     }
 
-    const room = await roomsService.getRoom(value.room_id);
+    const room = await roomsService.getRoomById(value.room_id);
     if (!room) {
       return res.status(404).json({
         message: 'Room does not found',

@@ -9,6 +9,9 @@ import moment from 'moment-timezone';
 import { foodsService } from '../services/food.service.js';
 import { orderDetailsService } from '../services/order-detail.service.js';
 import { accountsService } from '../services/account.service.js';
+import { moviesService } from '../services/movie.service.js';
+import { roomsService } from '../services/room.service.js';
+import { cinemasService } from '../services/cinema.service.js';
 
 export const createOrderController = async (req, res, next) => {
   try {
@@ -39,11 +42,19 @@ export const createOrderController = async (req, res, next) => {
       total_amount: 0,
     });
 
-    // Create ticket & total cost of tickets
+    // Create ticket & total cost of tickets & update status seat
     let totalTicketPrice = 0;
     let tickets = [];
     for (const seatId of seatIds) {
-      const seat = await seatsService.getSeat(seatId);
+      const statusSeat = await statusSeatsService.getStatusSeat(seatId, scheduleId);
+      if (statusSeat.dataValues.status === 'booked') {
+        return res.status(404).json({
+          message: 'Schedules available with seats',
+          status: 404,
+        });
+      }
+
+      const seat = await seatsService.getSeatById(seatId);
       const seatTypeId = seat.dataValues.seat_type_id;
       const seatType = await seatTypesService.getSeatType(seatTypeId);
       const ticketPrice = parseFloat(seatType.dataValues.price);
@@ -53,6 +64,8 @@ export const createOrderController = async (req, res, next) => {
         schedule_id: scheduleId,
         order_id: order.dataValues.id,
       });
+
+      await statusSeatsService.updateStatusSeat(seatId, scheduleId, 'booked');
     }
     await ticketsService.createTicket(tickets);
 
@@ -110,11 +123,84 @@ export const deleteOrderController = async (req, res, next) => {
       });
     }
 
+    const tickets = await ticketsService.getAllTicketsByOrderId(orderId);
+    tickets.map(async (ticket) => {
+      await statusSeatsService.updateStatusSeat(ticket.dataValues.seat_id, ticket.dataValues.schedule_id, 'available');
+    });
+
     await orderDetailsService.deleteOrderDetail(orderId);
     await ticketsService.deleteTicket(orderId);
     await ordersService.deleteOrder(orderId);
 
     res.json({ message: 'Delete order successfully', success: true });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getUserOrdersController = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const account = await accountsService.getAccountById(userId);
+    if (!account) {
+      return res.status(404).json({
+        message: 'Account does not found',
+        status: 404,
+      });
+    }
+
+    const orders = await ordersService.getAllOrdersByUser(userId);
+    const data = await Promise.all(
+      orders.map(async (order) => {
+        let seats = [];
+        let movieName = '';
+        let cinemaName = '';
+        let startTime = '';
+        const tickets = await ticketsService.getAllTicketsByOrderId(order.dataValues.id);
+        // Get movie, cinema, startTime form schedule
+        if (tickets.length > 0) {
+          const schedule = await schedulesService.getScheduleById(tickets[0].dataValues.schedule_id);
+          const movie = await moviesService.getMovieById(schedule.dataValues.movie_id);
+          movieName = movie.dataValues.name;
+          const room = await roomsService.getRoomById(schedule.dataValues.room_id);
+          const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+          cinemaName = cinema.dataValues.name;
+          startTime = moment(schedule.dataValues.start_time).format();
+        }
+
+        // Get seats
+        for (const ticket of tickets) {
+          const seat = await seatsService.getSeatById(ticket.dataValues.seat_id);
+          seats.push({
+            id: seat.dataValues.id,
+            rowPosition: seat.dataValues.row_position,
+            columnPosition: seat.dataValues.column_position,
+          });
+        }
+
+        //Get foods
+        let foods = [];
+        const orderDetails = await orderDetailsService.getOrderDetailByOrderId(order.dataValues.id);
+        for (const orderDetail of orderDetails) {
+          const food = await foodsService.getFoodById(orderDetail.dataValues.food_id);
+          foods.push(food.dataValues.name);
+        }
+        return {
+          id: order.dataValues.id,
+          seats,
+          schedule: {
+            movieName,
+            cinemaName,
+            startTime,
+          },
+          foods,
+          totalAmount: order.dataValues.total_amount,
+          orderDate: order.dataValues.order_date,
+        };
+      })
+    );
+
+    res.json({ message: 'Get all the order of each user', data, success: true });
   } catch (e) {
     next(e);
   }

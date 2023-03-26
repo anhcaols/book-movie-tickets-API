@@ -5,6 +5,14 @@ export class OrderDetailService {
     return await OrderDetailModel.findByPk(orderDetailId);
   }
 
+  async getOrderDetailByOrderId(orderId) {
+    return await OrderDetailModel.findAll({
+      where: {
+        order_id: orderId,
+      },
+    });
+  }
+
   async createOrderDetail(orderDetail) {
     return await OrderDetailModel.bulkCreate(orderDetail);
   }
