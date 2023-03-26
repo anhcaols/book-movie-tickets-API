@@ -44,3 +44,45 @@ export const deleteFoodController = async (req, res, next) => {
     next(e);
   }
 };
+
+export const updateFoodController = async (req, res, next) => {
+  try {
+    const { error, value } = FoodSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
+
+    const foodId = req.params.id;
+    const food = await foodsService.getFood(foodId);
+    if (!food) {
+      // nếu không tìm được food thì xóa ảnh đi
+      const imageName = req.file.filename;
+      if (imageName) {
+        fs.unlink(`public/images/${imageName}`, (err) => {
+          if (err) {
+            throw err;
+          }
+        });
+      }
+      return res.status(404).json({
+        message: 'Food does not found',
+        status: 404,
+      });
+    }
+    // xóa ảnh cũ khi cập nhập ảnh mới
+    const imageName = food.dataValues.image;
+    fs.unlink(`public/images/${imageName}`, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+
+    await foodsService.updateFood({ ...value, image: req.file.filename }, foodId);
+    res.json({ message: 'Update food successfully', success: true });
+  } catch (e) {
+    next(e);
+  }
+};
