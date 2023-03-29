@@ -40,6 +40,15 @@ export const createScheduleController = async (req, res, next) => {
 export const getAllScheduleController = async (req, res, next) => {
   try {
     const { error, value } = GetAllSchedulesSchema.validate(req.body);
+    const limit = parseInt(req.query.limit) || 10;
+    const page = req.query.page || 1;
+    const offset = (page - 1) * limit;
+    // value.room_id, value.movie_id
+    const schedules = await schedulesService.getAllSchedules(offset, limit);
+    const totalDocs = await schedulesService.getScheduleCount();
+    const totalPages = Math.ceil(totalDocs / limit);
+    const hasPrevPage = page > 1;
+    const hasNextPage = page < totalPages;
 
     const movie = await moviesService.getMovieById(value.movie_id);
     if (!movie) {
@@ -59,7 +68,6 @@ export const getAllScheduleController = async (req, res, next) => {
 
     const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
 
-    const schedules = await schedulesService.getAllSchedules(value.room_id, value.movie_id);
     const data = await Promise.all(
       schedules.map(async (schedule) => {
         return {
@@ -80,6 +88,15 @@ export const getAllScheduleController = async (req, res, next) => {
     res.json({
       message: 'Get all schedules successfully',
       schedules: data,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page: Number(page),
+        hasNextPage,
+        hasPrevPage,
+      },
       success: true,
     });
     if (error) {
