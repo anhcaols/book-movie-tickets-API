@@ -101,7 +101,7 @@ export const getAllStatusSeatController = async (req, res, next) => {
     const statusSeats = await statusSeatsService.getAllStatusSeat(value.schedule_id);
     const data = await Promise.all(
       statusSeats.map(async (statusSeat) => {
-        const seat = await seatsService.getSeat(statusSeat.dataValues.seat_id);
+        const seat = await seatsService.getSeatById(statusSeat.dataValues.seat_id);
         return {
           id: statusSeat.dataValues.id,
           seatId: statusSeat.seat_id,

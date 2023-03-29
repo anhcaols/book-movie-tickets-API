@@ -10,12 +10,21 @@ export class ScheduleService {
     return await ScheduleModel.findByPk(scheduleId);
   }
 
-  async getAllSchedules(offset, limit) {
-    return await ScheduleModel.findAll({ offset, limit });
+  async getAllSchedules(offset, limit, condition) {
+    console.log('====================================');
+    console.log(condition);
+    console.log('====================================');
+    return await ScheduleModel.findAll({
+      offset,
+      limit,
+      where: condition,
+    });
   }
 
-  async getScheduleCount() {
-    return await ScheduleModel.count();
+  async getScheduleCount(condition) {
+    return await ScheduleModel.count({
+      where: condition,
+    });
   }
 
   async createSchedule(schedule) {

@@ -4,6 +4,7 @@ import { moviesService } from '../services/movie.service.js';
 import { roomsService } from '../services/room.service.js';
 import { cinemasService } from '../services/cinema.service.js';
 import { statusSeatsService } from '../services/status-seat.service.js';
+import moment from 'moment';
 
 export const createScheduleController = async (req, res, next) => {
   try {
@@ -40,36 +41,29 @@ export const createScheduleController = async (req, res, next) => {
 export const getAllScheduleController = async (req, res, next) => {
   try {
     const { error, value } = GetAllSchedulesSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
     const limit = parseInt(req.query.limit) || 10;
     const page = req.query.page || 1;
     const offset = (page - 1) * limit;
-    // value.room_id, value.movie_id
-    const schedules = await schedulesService.getAllSchedules(offset, limit);
-    const totalDocs = await schedulesService.getScheduleCount();
+
+    if (value.start_time) {
+      value.start_time = moment(value.start_time).format();
+    }
+    const schedules = await schedulesService.getAllSchedules(offset, limit, value);
+    const totalDocs = await schedulesService.getScheduleCount(value);
     const totalPages = Math.ceil(totalDocs / limit);
     const hasPrevPage = page > 1;
     const hasNextPage = page < totalPages;
 
-    const movie = await moviesService.getMovieById(value.movie_id);
-    if (!movie) {
-      return res.status(404).json({
-        message: 'Movie does not found',
-        status: 404,
-      });
-    }
-
-    const room = await roomsService.getRoomById(value.room_id);
-    if (!room) {
-      return res.status(404).json({
-        message: 'Room does not found',
-        status: 404,
-      });
-    }
-
-    const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
-
     const data = await Promise.all(
       schedules.map(async (schedule) => {
+        const room = await roomsService.getRoomById(schedule.dataValues.room_id);
+        const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
         return {
           id: schedule.dataValues.id,
           movieId: schedule.dataValues.movie_id,
@@ -99,12 +93,6 @@ export const getAllScheduleController = async (req, res, next) => {
       },
       success: true,
     });
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-        status: 400,
-      });
-    }
   } catch (e) {
     next(e);
   }
