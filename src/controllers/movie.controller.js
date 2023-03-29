@@ -164,8 +164,8 @@ export const getNowShowingMoviesController = async (req, res, next) => {
   const page = req.query.page || 1;
   const offset = (page - 1) * limit;
 
-  const nowShowingMovies = await moviesService.getMovies(offset, limit, 'nowShowing');
-  const totalDocs = await moviesService.getMoviesCount('nowShowing');
+  const nowShowingMovies = await moviesService.getMovies(offset, limit, { status: 1 });
+  const totalDocs = await moviesService.getMoviesCount({ status: 1 });
   const totalPages = Math.ceil(totalDocs / limit);
 
   const hasPrevPage = page > 1;
@@ -209,8 +209,8 @@ export const getComingSoonMoviesController = async (req, res, next) => {
   const page = req.query.page || 1;
   const offset = (page - 1) * limit;
 
-  const comingSoonMovies = await moviesService.getMovies(offset, limit, 'comingSoon');
-  const totalDocs = await moviesService.getMoviesCount('comingSoon');
+  const comingSoonMovies = await moviesService.getMovies(offset, limit, { status: 0 });
+  const totalDocs = await moviesService.getMoviesCount({ status: 0 });
   const totalPages = Math.ceil(totalDocs / limit);
 
   const hasPrevPage = page > 1;

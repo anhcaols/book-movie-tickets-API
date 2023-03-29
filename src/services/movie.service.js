@@ -3,18 +3,7 @@ import { MovieGenreModel } from '../models/movie-genre.model.js';
 import { MovieModel } from '../models/movie.model.js';
 
 export class MovieService {
-  async getMovies(offset, limit, type) {
-    let condition = {};
-    if (type == 'nowShowing') {
-      condition = {
-        status: 1,
-      };
-    }
-    if (type == 'comingSoon') {
-      condition = {
-        status: 0,
-      };
-    }
+  async getMovies(offset, limit, condition) {
     return await MovieModel.findAll({
       offset,
       limit,
@@ -27,18 +16,7 @@ export class MovieService {
     });
   }
 
-  async getMoviesCount(type) {
-    let condition = {};
-    if (type == 'nowShowing') {
-      condition = {
-        status: 1,
-      };
-    }
-    if (type == 'comingSoon') {
-      condition = {
-        status: 0,
-      };
-    }
+  async getMoviesCount(condition) {
     return await MovieModel.count({
       where: condition,
     });
