@@ -11,13 +11,18 @@ export class ScheduleService {
   }
 
   async getAllSchedules(offset, limit, condition) {
-    console.log('====================================');
-    console.log(condition);
-    console.log('====================================');
     return await ScheduleModel.findAll({
       offset,
       limit,
       where: condition,
+    });
+  }
+
+  async getAllSchedulesByMovie(movieId) {
+    return await ScheduleModel.findAll({
+      where: {
+        movie_id: movieId,
+      },
     });
   }
 

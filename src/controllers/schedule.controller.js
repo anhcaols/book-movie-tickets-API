@@ -98,6 +98,97 @@ export const getAllScheduleController = async (req, res, next) => {
   }
 };
 
+export const getAllScheduleByMovieController = async (req, res, next) => {
+  try {
+    const { error, value } = GetAllSchedulesSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
+    const schedules = await schedulesService.getAllSchedulesByMovie(value.movie_id);
+
+    let cinemas = [];
+    let rooms = [];
+    await Promise.all(
+      schedules.map(async (schedule) => {
+        const room = await roomsService.getRoomById(schedule.dataValues.room_id);
+        const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+        cinemas.push(cinema.dataValues);
+        rooms.push(room.dataValues);
+      })
+    );
+
+    const scheduleByRoom = {};
+    schedules.forEach((schedule) => {
+      const roomId = schedule.dataValues.room_id;
+      const startTime = moment(schedule.dataValues.start_time).format();
+
+      if (!scheduleByRoom[roomId]) {
+        scheduleByRoom[roomId] = [];
+      }
+
+      scheduleByRoom[roomId].push(startTime);
+    });
+
+    const uniqueCinemas = [];
+    const getCinemas = () => {
+      const tempObj = {};
+      for (let i = 0; i < cinemas.length; i++) {
+        const item = cinemas[i];
+        const key = item.id + '|' + item.name + '|' + item.address;
+        if (!tempObj[key]) {
+          tempObj[key] = true;
+          uniqueCinemas.push(item);
+        }
+      }
+    };
+    getCinemas();
+
+    const uniqueRooms = [];
+    const getRooms = () => {
+      const tempObj = {};
+      for (let i = 0; i < rooms.length; i++) {
+        const item = rooms[i];
+        const key = item.id + '|' + item.name + '|' + item.cinema_id;
+        if (!tempObj[key]) {
+          tempObj[key] = true;
+          uniqueRooms.push(item);
+        }
+      }
+    };
+    getRooms();
+
+    const scheduleList = [];
+    await Promise.all(
+      uniqueRooms.map(async (room) => {
+        const roomId = room.id;
+        const cinema = await cinemasService.getCinemaById(room.cinema_id);
+        const schedules = scheduleByRoom[roomId] || [];
+        scheduleList.push({
+          movieId: value.movie_id,
+          room: {
+            id: roomId,
+            roomName: room.name,
+            cinemaName: cinema.dataValues.name,
+            cinemaAddress: cinema.dataValues.address,
+          },
+          showTimes: schedules,
+        });
+      })
+    );
+
+    res.json({
+      message: 'Get all schedules successfully',
+      schedules: scheduleList,
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const deleteScheduleController = async (req, res, next) => {
   try {
     const scheduleId = req.params.id;
