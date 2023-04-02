@@ -8,7 +8,8 @@ export const ScheduleSchema = Joi.object({
 });
 
 export const GetAllSchedulesSchema = Joi.object({
-  movie_id: Joi.number(),
-  room_id: Joi.number(),
-  start_time: Joi.date(),
+  movie_id: Joi.number().required(),
+  cinema_name: Joi.string(),
+  city: Joi.string(),
+  date_time: Joi.date(),
 });

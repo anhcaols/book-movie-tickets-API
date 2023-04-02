@@ -1,6 +1,10 @@
 import { SeatTypeModel } from '../models/seat-type.model.js';
 
 export class SeatTypeService {
+  async getAllSeatTypes() {
+    return await SeatTypeModel.findAll();
+  }
+
   async getSeatType(seatTypeId) {
     return await SeatTypeModel.findByPk(seatTypeId);
   }

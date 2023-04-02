@@ -129,7 +129,10 @@ export const getAllScheduleByMovieController = async (req, res, next) => {
         scheduleByRoom[roomId] = [];
       }
 
-      scheduleByRoom[roomId].push(startTime);
+      scheduleByRoom[roomId].push({
+        id: schedule.id,
+        startTime,
+      });
     });
 
     const uniqueCinemas = [];
@@ -160,7 +163,7 @@ export const getAllScheduleByMovieController = async (req, res, next) => {
     };
     getRooms();
 
-    const scheduleList = [];
+    let scheduleList = [];
     await Promise.all(
       uniqueRooms.map(async (room) => {
         const roomId = room.id;
@@ -179,9 +182,26 @@ export const getAllScheduleByMovieController = async (req, res, next) => {
       })
     );
 
+    const filteredSchedulesByDate = scheduleList.filter((schedule) => {
+      return schedule.showTimes.some((showTime) => {
+        return showTime.startTime.startsWith(moment(value.date_time).format('YYYY-MM-DD'));
+      });
+    });
+
+    const filteredSchedules = scheduleList.filter((schedule) => {
+      const isMatchedDate = schedule.showTimes.some((showTime) => {
+        return showTime.startTime.startsWith(moment(value.date_time).format('YYYY-MM-DD'));
+      });
+      const isMatchedCinema = schedule.room.cinemaName.includes(value.cinema_name);
+      const isMatchedCity = schedule.room.cinemaAddress.includes(value.city);
+
+      return isMatchedDate && isMatchedCinema && isMatchedCity;
+    });
+
     res.json({
       message: 'Get all schedules successfully',
-      schedules: scheduleList,
+      schedules: filteredSchedulesByDate,
+      filterSchedules: filteredSchedules,
       success: true,
     });
   } catch (e) {
