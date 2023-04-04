@@ -86,3 +86,12 @@ export const updateFoodController = async (req, res, next) => {
     next(e);
   }
 };
+
+export const getFoodsController = async (req, res, next) => {
+  try {
+    const foods = await foodsService.getFoods();
+    res.json({ message: 'Get foods successfully', foods, success: true });
+  } catch (e) {
+    next(e);
+  }
+};

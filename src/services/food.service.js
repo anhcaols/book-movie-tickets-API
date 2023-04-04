@@ -5,6 +5,10 @@ export class FoodService {
     return await FoodModel.findByPk(foodId);
   }
 
+  async getFoods() {
+    return await FoodModel.findAll();
+  }
+
   async createFood(food) {
     return await FoodModel.create(food);
   }
