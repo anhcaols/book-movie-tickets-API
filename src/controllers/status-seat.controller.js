@@ -1,7 +1,11 @@
+import moment from 'moment';
 import { StatusSeatSchema, UpdateStatusSeatSchema, GetAllStatusSeatSchema } from '../dto/status-seat.js';
 import { schedulesService } from '../services/schedule.service.js';
 import { seatsService } from '../services/seat.service.js';
 import { statusSeatsService } from '../services/status-seat.service.js';
+import { moviesService } from '../services/movie.service.js';
+import { roomsService } from '../services/room.service.js';
+import { seatTypesService } from '../services/seat-type.service.js';
 
 export const createStatusSeatController = async (req, res, next) => {
   try {
@@ -98,22 +102,61 @@ export const getAllStatusSeatController = async (req, res, next) => {
       });
     }
 
-    const statusSeats = await statusSeatsService.getAllStatusSeat(value.schedule_id);
+    const movie = await moviesService.getMovieById(schedule.dataValues.movie_id);
+
+    const limit = parseInt(req.query.limit) || 8;
+    const page = req.query.page || 1;
+    const offset = (page - 1) * limit;
+
+    const statusSeats = await statusSeatsService.getAllStatusSeat(offset, limit, value.schedule_id);
+    const totalDocs = await statusSeatsService.getCountStatusSeat(value.schedule_id);
+    const totalPages = Math.ceil(totalDocs / limit);
+
+    const hasPrevPage = page > 1;
+    const hasNextPage = page < totalPages;
+
     const data = await Promise.all(
       statusSeats.map(async (statusSeat) => {
         const seat = await seatsService.getSeatById(statusSeat.dataValues.seat_id);
+        const seatType = await seatTypesService.getSeatTypeById(seat.dataValues.seat_type_id);
+        const room = await roomsService.getRoomById(seat.dataValues.room_id);
         return {
           id: statusSeat.dataValues.id,
           seatId: statusSeat.seat_id,
-          scheduleId: statusSeat.schedule_id,
+          schedule: {
+            id: statusSeat.schedule_id,
+            movie: {
+              id: movie.dataValues.id,
+              name: movie.dataValues.name,
+            },
+            showTime: moment(schedule.dataValues.start_time).format(),
+          },
           status: statusSeat.status,
-          roomId: seat.dataValues.room_id,
+          seatType: seatType.dataValues.type,
+          price: seatType.dataValues.price,
+          room: {
+            id: room.dataValues.id,
+            name: room.dataValues.name,
+          },
           rowPosition: seat.dataValues.row_position,
           columnPosition: seat.dataValues.column_position,
         };
       })
     );
-    res.json({ message: 'Get all status seat successfully', statusSeats: data, success: true });
+    res.json({
+      message: 'Get all status seat successfully',
+      statusSeats: data,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page: Number(page),
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

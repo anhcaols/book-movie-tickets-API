@@ -5,8 +5,12 @@ export class StatusSeatService {
     return await StatusSeatModel.findOne({ where: { seat_id: seatId, schedule_id: scheduleId } });
   }
 
-  async getAllStatusSeat(scheduleId) {
-    return await StatusSeatModel.findAll({ where: { schedule_id: scheduleId } });
+  async getAllStatusSeat(offset, limit, scheduleId) {
+    return await StatusSeatModel.findAll({ offset, limit, where: { schedule_id: scheduleId } });
+  }
+
+  async getCountStatusSeat(scheduleId) {
+    return await StatusSeatModel.count({ where: { schedule_id: scheduleId } });
   }
 
   async createStatusSeat(statusSeat) {

@@ -11,5 +11,5 @@ export const UpdateStatusSeatSchema = Joi.object({
 });
 
 export const GetAllStatusSeatSchema = Joi.object({
-  schedule_id: Joi.number().required(),
+  schedule_id: Joi.number(),
 });
