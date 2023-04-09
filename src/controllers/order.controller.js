@@ -23,9 +23,19 @@ export const createOrderController = async (req, res, next) => {
       });
     }
     const userId = value.user_id;
-    const seatIds = value.seat_id;
+    const seatIds = value.seats;
     const scheduleId = value.schedule_id;
-    const foods = value.food;
+    const foods = value.foods;
+
+    for (const seatId of seatIds) {
+      const statusSeat = await statusSeatsService.getStatusSeat(seatId, scheduleId);
+      if (statusSeat.dataValues.status === 'booked') {
+        return res.status(404).json({
+          message: 'Schedules available with seats',
+          status: 404,
+        });
+      }
+    }
 
     const schedule = await schedulesService.getScheduleById(scheduleId);
     if (!schedule) {
@@ -46,14 +56,6 @@ export const createOrderController = async (req, res, next) => {
     let totalTicketPrice = 0;
     let tickets = [];
     for (const seatId of seatIds) {
-      const statusSeat = await statusSeatsService.getStatusSeat(seatId, scheduleId);
-      if (statusSeat.dataValues.status === 'booked') {
-        return res.status(404).json({
-          message: 'Schedules available with seats',
-          status: 404,
-        });
-      }
-
       const seat = await seatsService.getSeatById(seatId);
       const seatTypeId = seat.dataValues.seat_type_id;
       const seatType = await seatTypesService.getSeatType(seatTypeId);
@@ -194,7 +196,7 @@ export const getUserOrdersController = async (req, res, next) => {
             startTime,
           },
           foods,
-          totalAmount: order.dataValues.total_amount,
+          totalAmount: Number(order.dataValues.total_amount),
           orderDate: order.dataValues.order_date,
         };
       })

@@ -2,6 +2,7 @@ import { StatusSeatModel } from '../models/status-seat.model.js';
 
 export class StatusSeatService {
   async getStatusSeat(seatId, scheduleId) {
+    console.log(seatId, scheduleId);
     return await StatusSeatModel.findOne({ where: { seat_id: seatId, schedule_id: scheduleId } });
   }
 
