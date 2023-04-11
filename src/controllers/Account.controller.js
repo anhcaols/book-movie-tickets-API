@@ -13,8 +13,13 @@ export const createAccountController = async (req, res, next) => {
         status: 400,
       });
     }
-
-    value.role = Role.USER;
+    if (value.role === 'admin') {
+      value.role = Role.ADMIN;
+    } else if (value.role === 'staff') {
+      value.role = Role.STAFF;
+    } else {
+      value.role = Role.USER;
+    }
     value.password = await hashPassword(value.password);
 
     await accountsService.createAccount({ ...value });

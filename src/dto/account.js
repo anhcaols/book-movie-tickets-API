@@ -14,7 +14,8 @@ export const RegisterAccountSchema = Joi.object({
     .required(),
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
   confirm_password: Joi.ref('password'),
-  phone_number: Joi.string().required(),
-  date_of_birth: Joi.string().required(),
-  gender: Joi.string().required(),
+  phone_number: Joi.string().allow(null),
+  date_of_birth: Joi.string().allow(null),
+  gender: Joi.string().allow(null),
+  role: Joi.string().allow(null),
 });
