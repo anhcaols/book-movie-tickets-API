@@ -3,10 +3,12 @@ import jwt from 'jsonwebtoken';
 import { ApiError } from '../api-error.js';
 import httpStatus from 'http-status';
 
-export function generateToken(email) {
+export function generateToken(email, isAdmin) {
   const payload = {
     email,
+    isAdmin,
   };
+
   const accessToken = jwt.sign(payload, `${GlobalConfig.secretKey}`, {
     expiresIn: '10h',
   });

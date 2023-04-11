@@ -3,6 +3,8 @@ import { hashPassword, verifyPassword } from '../utils/password.js';
 import { generateToken } from '../utils/jwt.js';
 import { Role } from '../enums/auth.enum.js';
 import { LoginAccountSchema, RegisterAccountSchema } from '../dto/account.js';
+import { ApiError } from '../api-error.js';
+import httpStatus from 'http-status';
 
 export const createAccountController = async (req, res, next) => {
   try {
@@ -57,6 +59,62 @@ export const loginAccountController = async (req, res, next) => {
     }
 
     const { accessToken, refreshToken } = generateToken(account.email);
+
+    return res.json({
+      accessToken,
+      refreshToken,
+      account: {
+        id: account.dataValues.id,
+        fullName: account.dataValues.full_name,
+        email: account.dataValues.email,
+        phoneNumber: account.dataValues.phone_number,
+        gender: account.dataValues.gender,
+        dateOfBirth: account.dataValues.date_of_birth,
+        avatar: account.dataValues.avatar,
+        role: account.dataValues.role,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const loginAccountByAdminController = async (req, res, next) => {
+  try {
+    const { error, value } = LoginAccountSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
+
+    const account = await accountsService.getAccountByEmail(value.email);
+    if (!account) {
+      return res.status(404).json({
+        message: 'Account does not found',
+        status: 404,
+      });
+    }
+
+    const isEqual = await verifyPassword(value.password, account.password);
+    if (!isEqual) {
+      return res.status(400).json({
+        message: 'Password does not match',
+        status: 400,
+      });
+    }
+    let isAdmin;
+    if (account.dataValues.role === 'admin') {
+      isAdmin = true;
+    }
+
+    if (!isAdmin) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access');
+    }
+
+    const { accessToken, refreshToken } = generateToken(account.email, isAdmin);
 
     return res.json({
       accessToken,
