@@ -156,6 +156,52 @@ export const getAccountByAccessTokenController = async (req, res, next) => {
   }
 };
 
+export const getUsersController = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const page = req.query.page || 1;
+    const offset = (page - 1) * limit;
+
+    const accounts = await accountsService.getUsers(offset, limit);
+    const totalDocs = await accountsService.getUsersCount();
+    const totalPages = Math.ceil(totalDocs / limit);
+
+    const hasPrevPage = page > 1;
+    const hasNextPage = page < totalPages;
+    const data = await Promise.all(
+      accounts.map(async (account) => {
+        return {
+          id: account.dataValues.id,
+          fullName: account.dataValues.fullName,
+          email: account.dataValues.email,
+          password: account.dataValues.password,
+          phoneNumber: account.dataValues.phone_number,
+          gender: account.dataValues.gender,
+          dateOfBirth: account.dataValues.date_of_birth,
+          avatar: account.dataValues.avatar,
+          role: account.dataValues.role,
+        };
+      })
+    );
+    res.json({
+      message: 'Get accounts successfully',
+      accounts: data,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page: Number(page),
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const uploadAvatarController = async (req, res, next) => {
   try {
     res.send('File uploaded successfully!');

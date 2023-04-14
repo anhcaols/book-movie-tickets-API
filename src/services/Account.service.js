@@ -5,6 +5,16 @@ export class AccountService {
     await AccountModel.create(account);
   }
 
+  async getUsers(offset, limit) {
+    return await AccountModel.findAll({
+      offset,
+      limit,
+      where: {
+        role: 'user',
+      },
+    });
+  }
+
   async getAccountByEmail(email) {
     return await AccountModel.findOne({
       where: {
@@ -17,6 +27,14 @@ export class AccountService {
     return await AccountModel.findOne({
       where: {
         id,
+      },
+    });
+  }
+
+  async getUsersCount() {
+    return await AccountModel.count({
+      where: {
+        role: 'user',
       },
     });
   }

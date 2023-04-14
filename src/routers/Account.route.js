@@ -7,6 +7,7 @@ import {
   uploadAvatarController,
   getAccountByAccessTokenController,
   loginAccountByAdminController,
+  getUsersController,
 } from '../controllers/account.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 
@@ -17,3 +18,4 @@ accountRouter.post('/auth/login', loginAccountController);
 accountRouter.post('/admin/auth/login', loginAccountByAdminController);
 accountRouter.post('/accounts/upload_avatar', uploadAvatarController);
 accountRouter.get('/accounts/info', authMiddleware(), getAccountByAccessTokenController);
+accountRouter.get('/accounts', authMiddleware(), getUsersController);
