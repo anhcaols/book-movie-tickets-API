@@ -47,7 +47,7 @@ export const deleteMovieController = async (req, res, next) => {
     }
     const imageName = movie.dataValues.image;
     if (imageName) {
-      fs.unlink(`public/images/${imageName}`, (err) => {
+      fs.unlink(`public/images/movies/${imageName}`, (err) => {
         if (err) {
           throw err;
         }
@@ -88,7 +88,7 @@ export const updateMovieController = async (req, res, next) => {
     if (!movie) {
       const imageName = req.file.filename;
       if (imageName) {
-        fs.unlink(`public/images/${imageName}`, (err) => {
+        fs.unlink(`public/images/movies/${imageName}`, (err) => {
           if (err) {
             throw err;
           }
@@ -101,7 +101,7 @@ export const updateMovieController = async (req, res, next) => {
     }
     // Delete image old and insert new image
     const imageName = movie.dataValues.image;
-    fs.unlink(`public/images/${imageName}`, (err) => {
+    fs.unlink(`public/images/movies/${imageName}`, (err) => {
       if (err) {
         throw err;
       }

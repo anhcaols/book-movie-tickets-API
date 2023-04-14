@@ -32,7 +32,7 @@ export const deleteFoodController = async (req, res, next) => {
 
     const imageName = room.dataValues.image;
     if (imageName) {
-      fs.unlink(`public/images/${imageName}`, (err) => {
+      fs.unlink(`public/images/foods/${imageName}`, (err) => {
         if (err) {
           throw err;
         }
@@ -61,7 +61,7 @@ export const updateFoodController = async (req, res, next) => {
       // nếu không tìm được food thì xóa ảnh đi
       const imageName = req.file.filename;
       if (imageName) {
-        fs.unlink(`public/images/${imageName}`, (err) => {
+        fs.unlink(`public/images/foods/${imageName}`, (err) => {
           if (err) {
             throw err;
           }
@@ -74,7 +74,7 @@ export const updateFoodController = async (req, res, next) => {
     }
     // xóa ảnh cũ khi cập nhập ảnh mới
     const imageName = food.dataValues.image;
-    fs.unlink(`public/images/${imageName}`, (err) => {
+    fs.unlink(`public/images/foods/${imageName}`, (err) => {
       if (err) {
         throw err;
       }
