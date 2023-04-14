@@ -202,6 +202,23 @@ export const getUsersController = async (req, res, next) => {
   }
 };
 
+export const deleteUserController = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const user = await accountsService.getAccountById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'Account does not found',
+      });
+    }
+
+    await accountsService.deleteUser(userId);
+    res.json({ message: 'Delete user successfully', success: true });
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const uploadAvatarController = async (req, res, next) => {
   try {
     res.send('File uploaded successfully!');

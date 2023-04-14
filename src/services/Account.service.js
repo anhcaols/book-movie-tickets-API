@@ -38,6 +38,15 @@ export class AccountService {
       },
     });
   }
+
+  async deleteUser(userId) {
+    const user = await AccountModel.findOne({
+      where: { id: userId },
+    });
+    if (user) {
+      await user.destroy();
+    }
+  }
 }
 
 export const accountsService = new AccountService();
