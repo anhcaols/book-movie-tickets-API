@@ -47,6 +47,12 @@ export class AccountService {
       await user.destroy();
     }
   }
+
+  async updateUser(newUser, userId) {
+    return await AccountModel.update(newUser, {
+      where: { id: userId },
+    });
+  }
 }
 
 export const accountsService = new AccountService();

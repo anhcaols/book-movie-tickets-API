@@ -2,7 +2,7 @@ import { accountsService } from '../services/account.service.js';
 import { hashPassword, verifyPassword } from '../utils/password.js';
 import { generateToken } from '../utils/jwt.js';
 import { Role } from '../enums/auth.enum.js';
-import { LoginAccountSchema, RegisterAccountSchema } from '../dto/account.js';
+import { LoginAccountSchema, RegisterAccountSchema, UpdateAccountSchema } from '../dto/account.js';
 import { ApiError } from '../api-error.js';
 import httpStatus from 'http-status';
 
@@ -214,6 +214,32 @@ export const deleteUserController = async (req, res, next) => {
 
     await accountsService.deleteUser(userId);
     res.json({ message: 'Delete user successfully', success: true });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const updateUserController = async (req, res, next) => {
+  try {
+    const { error, value } = UpdateAccountSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
+
+    const userId = req.params.id;
+    const user = await accountsService.getAccountById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'Account does not found',
+      });
+    }
+
+    await accountsService.updateUser({ ...value }, userId);
+
+    res.json({ message: 'Update account successfully', success: true });
   } catch (e) {
     next(e);
   }

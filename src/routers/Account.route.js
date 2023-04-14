@@ -9,6 +9,7 @@ import {
   loginAccountByAdminController,
   getUsersController,
   deleteUserController,
+  updateUserController,
 } from '../controllers/account.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 
@@ -21,3 +22,4 @@ accountRouter.post('/accounts/upload_avatar', uploadAvatarController);
 accountRouter.get('/accounts/info', authMiddleware(), getAccountByAccessTokenController);
 accountRouter.get('/accounts', authMiddleware(), getUsersController);
 accountRouter.delete('/accounts/:id', authMiddleware(), deleteUserController);
+accountRouter.patch('/accounts/:id', authMiddleware(), updateUserController);

@@ -20,3 +20,10 @@ export const RegisterAccountSchema = Joi.object({
   gender: Joi.string().allow(null),
   role: Joi.string().allow(null),
 });
+
+export const UpdateAccountSchema = Joi.object({
+  full_name: Joi.string().min(1).max(30).required(),
+  phone_number: Joi.string().allow(null),
+  date_of_birth: Joi.string().allow(null),
+  gender: Joi.string().allow(null),
+});
