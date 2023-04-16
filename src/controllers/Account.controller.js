@@ -23,10 +23,31 @@ export const createAccountController = async (req, res, next) => {
       value.role = Role.USER;
     }
     value.password = await hashPassword(value.password);
+    const accountByEmail = await accountsService.getAccountByEmail(value.email);
+    const accountByPhone = await accountsService.getAccountByPhoneNumber(value.phone_number);
+    if (accountByEmail || accountByPhone) {
+      return res.status(404).json({
+        message: 'Existing account',
+        status: 404,
+      });
+    }
 
     await accountsService.createAccount({ ...value });
-
-    res.json({ message: 'Register account successfully', success: true });
+    const account = await accountsService.getAccountByEmail(value.email);
+    res.json({
+      message: 'Register account successfully',
+      account: {
+        id: account.dataValues.id,
+        fullName: account.dataValues.full_name,
+        email: account.dataValues.email,
+        phoneNumber: account.dataValues.phone_number,
+        gender: account.dataValues.gender,
+        dateOfBirth: account.dataValues.date_of_birth,
+        avatar: account.dataValues.avatar,
+        role: account.dataValues.role,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }
@@ -172,7 +193,7 @@ export const getUsersController = async (req, res, next) => {
       accounts.map(async (account) => {
         return {
           id: account.dataValues.id,
-          fullName: account.dataValues.fullName,
+          fullName: account.dataValues.full_name,
           email: account.dataValues.email,
           password: account.dataValues.password,
           phoneNumber: account.dataValues.phone_number,

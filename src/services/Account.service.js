@@ -23,6 +23,14 @@ export class AccountService {
     });
   }
 
+  async getAccountByPhoneNumber(phoneNumber) {
+    return await AccountModel.findOne({
+      where: {
+        phone_number: phoneNumber,
+      },
+    });
+  }
+
   async getAccountById(id) {
     return await AccountModel.findOne({
       where: {

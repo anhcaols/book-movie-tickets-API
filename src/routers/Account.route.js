@@ -11,7 +11,7 @@ import {
   deleteUserController,
   updateUserController,
 } from '../controllers/account.controller.js';
-import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { authMiddleware, authMiddlewareWithAdmin } from '../middlewares/auth.middleware.js';
 
 export const accountRouter = Router();
 
@@ -20,6 +20,6 @@ accountRouter.post('/auth/login', loginAccountController);
 accountRouter.post('/admin/auth/login', loginAccountByAdminController);
 accountRouter.post('/accounts/upload_avatar', uploadAvatarController);
 accountRouter.get('/accounts/info', authMiddleware(), getAccountByAccessTokenController);
-accountRouter.get('/accounts', authMiddleware(), getUsersController);
-accountRouter.delete('/accounts/:id', authMiddleware(), deleteUserController);
-accountRouter.patch('/accounts/:id', authMiddleware(), updateUserController);
+accountRouter.get('/accounts', authMiddlewareWithAdmin(), getUsersController);
+accountRouter.delete('/accounts/:id', authMiddlewareWithAdmin(), deleteUserController);
+accountRouter.patch('/accounts/:id', authMiddlewareWithAdmin(), updateUserController);

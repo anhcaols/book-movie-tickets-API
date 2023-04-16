@@ -22,6 +22,9 @@ export function generateToken(email, isAdmin) {
 export function verifyToken(token) {
   try {
     const payload = jwt.verify(token, `${GlobalConfig.secretKey}`);
+    if (!payload) {
+      return res.status(401).send('Unauthorized request');
+    }
     return payload;
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, error.message);
