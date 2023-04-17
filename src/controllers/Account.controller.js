@@ -223,6 +223,35 @@ export const getUsersController = async (req, res, next) => {
   }
 };
 
+export const getUserByIdController = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const user = await accountsService.getAccountById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'Account does not found',
+      });
+    }
+
+    res.json({
+      message: 'Get user successfully',
+      account: {
+        id: user.dataValues.id,
+        fullName: user.dataValues.full_name,
+        email: user.dataValues.email,
+        phoneNumber: user.dataValues.phone_number,
+        gender: user.dataValues.gender,
+        dateOfBirth: user.dataValues.date_of_birth,
+        avatar: user.dataValues.avatar,
+        role: user.dataValues.role,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const deleteUserController = async (req, res, next) => {
   try {
     const userId = req.params.id;
@@ -258,9 +287,37 @@ export const updateUserController = async (req, res, next) => {
       });
     }
 
-    await accountsService.updateUser({ ...value }, userId);
+    const [accountByEmail, accountByPhone] = await Promise.all([
+      accountsService.getAccountByEmail(value.email),
+      accountsService.getAccountByPhoneNumber(value.phone_number),
+    ]);
 
-    res.json({ message: 'Update account successfully', success: true });
+    if (user.dataValues.email !== value.email || user.dataValues.phone_number !== value.phone_number) {
+      if (accountByEmail || accountByPhone) {
+        return res.status(404).json({
+          message: 'Existing account',
+          status: 404,
+        });
+      }
+    }
+
+    await accountsService.updateUser({ ...value }, userId);
+    const account = await accountsService.getAccountByEmail(value.email);
+    const { id, full_name, email, phone_number, gender, date_of_birth, avatar, role } = account.dataValues;
+    res.json({
+      message: 'Update account successfully',
+      account: {
+        id,
+        fullName: full_name,
+        email,
+        phoneNumber: phone_number,
+        gender,
+        dateOfBirth: date_of_birth,
+        avatar,
+        role,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

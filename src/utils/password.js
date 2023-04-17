@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
 export async function hashPassword(password) {
   const saltRounds = 12;
@@ -6,6 +6,5 @@ export async function hashPassword(password) {
 }
 
 export async function verifyPassword(password, hashedPassword) {
-
   return await bcrypt.compare(password, hashedPassword);
 }
