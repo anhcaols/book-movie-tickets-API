@@ -65,7 +65,7 @@ export const getCinemasController = async (req, res, next) => {
     const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
     const cinemas = await cinemasService.getCinemas(offset, limit);
     res.json({
-      message: 'Update cinema successfully',
+      message: 'Get cinemas successfully',
       cinemas,
       paginationOptions: {
         totalDocs,

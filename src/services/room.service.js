@@ -1,6 +1,14 @@
 import { RoomModel } from '../models/room.model.js';
 
 export class RoomService {
+  async getRooms(offset, limit) {
+    return await RoomModel.findAll({ offset, limit });
+  }
+
+  async getRoomCounts() {
+    return await RoomModel.count();
+  }
+
   async getRoomById(roomId) {
     return await RoomModel.findByPk(roomId);
   }

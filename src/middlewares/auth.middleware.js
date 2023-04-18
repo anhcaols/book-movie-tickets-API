@@ -22,7 +22,7 @@ export const authMiddleware = () => async (req, res, next) => {
   }
 };
 
-export const authMiddlewareWithAdmin = () => async (req, res, next) => {
+export const authMiddlewareByAdmin = () => async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
