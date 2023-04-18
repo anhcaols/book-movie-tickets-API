@@ -82,3 +82,23 @@ export const getCinemasController = async (req, res, next) => {
     next(e);
   }
 };
+
+export const getCinemaController = async (req, res, next) => {
+  try {
+    const cinemaId = req.params.id;
+    const cinema = await cinemasService.getCinemaById(cinemaId);
+    if (!cinema) {
+      return res.status(404).json({
+        message: 'Cinema does not found',
+      });
+    }
+
+    res.json({
+      message: 'Get cinema successfully',
+      cinema,
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
