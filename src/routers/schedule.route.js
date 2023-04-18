@@ -1,7 +1,7 @@
 import 'express-async-errors';
 
 import { Router } from 'express';
-import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { authMiddlewareByAdmin } from '../middlewares/auth.middleware.js';
 import {
   createScheduleController,
   deleteScheduleController,
@@ -12,8 +12,8 @@ import {
 
 export const scheduleRouter = Router();
 
-scheduleRouter.post('/schedules', authMiddleware(), createScheduleController);
 scheduleRouter.post('/all-schedules', getAllScheduleController);
+scheduleRouter.post('/schedules', authMiddlewareByAdmin(), createScheduleController);
 scheduleRouter.post('/all-schedules/movie', getAllScheduleByMovieController);
-scheduleRouter.delete('/schedules/:id', authMiddleware(), deleteScheduleController);
-scheduleRouter.patch('/schedules/:id', authMiddleware(), updateScheduleController);
+scheduleRouter.delete('/schedules/:id', authMiddlewareByAdmin(), deleteScheduleController);
+scheduleRouter.patch('/schedules/:id', authMiddlewareByAdmin(), updateScheduleController);

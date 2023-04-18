@@ -1,7 +1,7 @@
 import 'express-async-errors';
 
 import { Router } from 'express';
-import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { authMiddleware, authMiddlewareByAdmin } from '../middlewares/auth.middleware.js';
 import {
   createFoodController,
   deleteFoodController,
@@ -23,6 +23,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 foodRouter.get('/foods', authMiddleware(), getFoodsController);
-foodRouter.post('/foods', authMiddleware(), upload.single('image'), createFoodController);
-foodRouter.delete('/foods/:id', authMiddleware(), deleteFoodController);
-foodRouter.patch('/foods/:id', authMiddleware(), upload.single('image'), updateFoodController);
+foodRouter.post('/foods', authMiddlewareByAdmin(), upload.single('image'), createFoodController);
+foodRouter.delete('/foods/:id', authMiddlewareByAdmin(), deleteFoodController);
+foodRouter.patch('/foods/:id', authMiddlewareByAdmin(), upload.single('image'), updateFoodController);

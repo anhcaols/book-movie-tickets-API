@@ -1,7 +1,7 @@
 import 'express-async-errors';
 
 import { Router } from 'express';
-import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { authMiddlewareByAdmin } from '../middlewares/auth.middleware.js';
 import {
   createSeatTypeController,
   deleteSeatTypeController,
@@ -10,6 +10,6 @@ import {
 
 export const seatTypeRouter = Router();
 
-seatTypeRouter.post('/seat-types', authMiddleware(), createSeatTypeController);
-seatTypeRouter.delete('/seat-types/:id', authMiddleware(), deleteSeatTypeController);
-seatTypeRouter.patch('/seat-types/:id', authMiddleware(), updateSeatTypeController);
+seatTypeRouter.post('/seat-types', authMiddlewareByAdmin(), createSeatTypeController);
+seatTypeRouter.delete('/seat-types/:id', authMiddlewareByAdmin(), deleteSeatTypeController);
+seatTypeRouter.patch('/seat-types/:id', authMiddlewareByAdmin(), updateSeatTypeController);

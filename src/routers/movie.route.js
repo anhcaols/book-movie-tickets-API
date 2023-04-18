@@ -10,6 +10,7 @@ import {
   updateMovieController,
 } from '../controllers/movie.controller.js';
 import multer from 'multer';
+import { authMiddlewareByAdmin } from '../middlewares/auth.middleware.js';
 
 export const movieRouter = Router();
 
@@ -28,6 +29,6 @@ movieRouter.get('/movies/now-showing', getNowShowingMoviesController);
 movieRouter.get('/movies/coming-soon', getComingSoonMoviesController);
 movieRouter.get('/movies/:slug', getMovieController);
 
-movieRouter.post('/movies', upload.single('image'), createMovieController);
-movieRouter.delete('/movies/:id', deleteMovieController);
-movieRouter.patch('/movies/:id', upload.single('image'), updateMovieController);
+movieRouter.post('/movies', authMiddlewareByAdmin, upload.single('image'), createMovieController);
+movieRouter.delete('/movies/:id', authMiddlewareByAdmin, deleteMovieController);
+movieRouter.patch('/movies/:id', authMiddlewareByAdmin, upload.single('image'), updateMovieController);
