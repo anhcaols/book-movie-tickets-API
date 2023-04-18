@@ -1,5 +1,6 @@
 import { CinemaSchema } from '../dto/cinema.js';
 import { cinemasService } from '../services/cinema.service.js';
+import { utils } from '../utils/index.js';
 
 export const createCinemaController = async (req, res, next) => {
   try {
@@ -60,8 +61,23 @@ export const updateCinemaController = async (req, res, next) => {
 
 export const getCinemasController = async (req, res, next) => {
   try {
-    const cinemas = await cinemasService.getCinemas();
-    res.json({ message: 'Update cinema successfully', cinemas, success: true });
+    const totalDocs = await cinemasService.getCinemaCounts();
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+    const cinemas = await cinemasService.getCinemas(offset, limit);
+    res.json({
+      message: 'Update cinema successfully',
+      cinemas,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page,
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

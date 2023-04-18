@@ -1,8 +1,12 @@
 import { CinemaModel } from '../models/cinema.model.js';
 
 export class CinemaService {
-  async getCinemas() {
-    return await CinemaModel.findAll();
+  async getCinemas(offset, limit) {
+    return await CinemaModel.findAll({ offset, limit });
+  }
+
+  async getCinemaCounts() {
+    return await CinemaModel.count();
   }
 
   async getCinemaById(cinemaId) {
