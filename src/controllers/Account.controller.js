@@ -5,7 +5,7 @@ import { Role } from '../enums/auth.enum.js';
 import { LoginAccountSchema, RegisterAccountSchema, UpdateAccountSchema } from '../dto/account.js';
 import { ApiError } from '../api-error.js';
 import httpStatus from 'http-status';
-
+import { utils } from '../utils/index.js';
 export const createAccountController = async (req, res, next) => {
   try {
     const { error, value } = RegisterAccountSchema.validate(req.body);
@@ -179,16 +179,10 @@ export const getAccountByAccessTokenController = async (req, res, next) => {
 
 export const getUsersController = async (req, res, next) => {
   try {
-    const limit = parseInt(req.query.limit) || 10;
-    const page = req.query.page || 1;
-    const offset = (page - 1) * limit;
-
-    const accounts = await accountsService.getUsers(offset, limit);
     const totalDocs = await accountsService.getUsersCount();
-    const totalPages = Math.ceil(totalDocs / limit);
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+    const accounts = await accountsService.getUsers(offset, limit);
 
-    const hasPrevPage = page > 1;
-    const hasNextPage = page < totalPages;
     const data = await Promise.all(
       accounts.map(async (account) => {
         return {
@@ -212,7 +206,7 @@ export const getUsersController = async (req, res, next) => {
         offset,
         limit,
         totalPages,
-        page: Number(page),
+        page,
         hasNextPage,
         hasPrevPage,
       },

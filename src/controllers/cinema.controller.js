@@ -57,3 +57,12 @@ export const updateCinemaController = async (req, res, next) => {
     next(e);
   }
 };
+
+export const getCinemasController = async (req, res, next) => {
+  try {
+    const cinemas = await cinemasService.getCinemas();
+    res.json({ message: 'Update cinema successfully', cinemas, success: true });
+  } catch (e) {
+    next(e);
+  }
+};

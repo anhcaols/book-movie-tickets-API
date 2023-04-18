@@ -1,6 +1,10 @@
 import { CinemaModel } from '../models/cinema.model.js';
 
 export class CinemaService {
+  async getCinemas() {
+    return await CinemaModel.findAll();
+  }
+
   async getCinemaById(cinemaId) {
     return await CinemaModel.findOne({
       where: {
