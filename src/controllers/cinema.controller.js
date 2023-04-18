@@ -53,7 +53,8 @@ export const updateCinemaController = async (req, res, next) => {
     }
 
     await cinemasService.updateCinema(value, cinemaId);
-    res.json({ message: 'Update cinema successfully', success: true });
+    const newCinema = await cinemasService.getCinemaById(cinemaId);
+    res.json({ message: 'Update cinema successfully', cinema: newCinema.dataValues, success: true });
   } catch (e) {
     next(e);
   }
