@@ -2,6 +2,7 @@ import { RoomSchema } from '../dto/room.js';
 import { roomsService } from '../services/room.service.js';
 import { seatsService } from '../services/seat.service.js';
 import { utils } from '../utils/index.js';
+import { cinemasService } from '../services/cinema.service.js';
 
 export const createRoomController = async (req, res, next) => {
   try {
@@ -42,10 +43,27 @@ export const getRoomsController = async (req, res, next) => {
   try {
     const totalDocs = await roomsService.getRoomCounts();
     const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
-    const cinemas = await roomsService.getRooms(offset, limit);
+    const rooms = await roomsService.getRooms(offset, limit);
+    const data = await Promise.all(
+      rooms.map(async (room) => {
+        const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+        const { id, name, row_number, column_number } = room.dataValues;
+        return {
+          id,
+          name,
+          rowNumber: row_number,
+          columnNumber: column_number,
+          cinema: {
+            id: cinema.dataValues.id,
+            name: cinema.dataValues.name,
+            address: cinema.dataValues.address,
+          },
+        };
+      })
+    );
     res.json({
       message: 'Get rooms successfully',
-      cinemas,
+      rooms: data,
       paginationOptions: {
         totalDocs,
         offset,
