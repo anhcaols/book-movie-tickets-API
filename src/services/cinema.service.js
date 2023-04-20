@@ -2,7 +2,7 @@ import { CinemaModel } from '../models/cinema.model.js';
 
 export class CinemaService {
   async getCinemas(offset, limit) {
-    return await CinemaModel.findAll({ offset, limit });
+    return await CinemaModel.findAll({ offset, limit, order: [['id', 'DESC']] });
   }
 
   async getCinemaCounts() {
@@ -18,7 +18,7 @@ export class CinemaService {
   }
 
   async createCinema(cinema) {
-    await CinemaModel.create(cinema);
+    return await CinemaModel.create(cinema);
   }
 
   async deleteCinema(cinemaId) {

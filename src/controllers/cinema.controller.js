@@ -11,8 +11,9 @@ export const createCinemaController = async (req, res, next) => {
       });
     }
 
-    await cinemasService.createCinema(value);
-    res.json({ message: 'Create cinema successfully', success: true });
+    const cinema = await cinemasService.createCinema(value);
+
+    res.json({ message: 'Create cinema successfully', cinema: cinema.dataValues, success: true });
   } catch (e) {
     next(e);
   }
