@@ -12,6 +12,7 @@ export class AccountService {
       where: {
         role: 'user',
       },
+      order: [['id', 'DESC']],
     });
   }
 

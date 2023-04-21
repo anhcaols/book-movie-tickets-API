@@ -2,7 +2,7 @@ import { RoomModel } from '../models/room.model.js';
 
 export class RoomService {
   async getRooms(offset, limit) {
-    return await RoomModel.findAll({ offset, limit });
+    return await RoomModel.findAll({ offset, limit, order: [['id', 'DESC']] });
   }
 
   async getRoomCounts() {
@@ -22,6 +22,16 @@ export class RoomService {
     if (room) {
       await room.destroy();
     }
+  }
+
+  async deleteRoomByCinema(cinemaId) {
+    const rooms = await RoomModel.findAll({
+      where: { cinema_id: cinemaId },
+    });
+
+    rooms.map(async (room) => {
+      await room.destroy();
+    });
   }
 }
 

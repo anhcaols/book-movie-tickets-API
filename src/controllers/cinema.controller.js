@@ -1,5 +1,6 @@
 import { CinemaSchema } from '../dto/cinema.js';
 import { cinemasService } from '../services/cinema.service.js';
+import { roomsService } from '../services/room.service.js';
 import { utils } from '../utils/index.js';
 
 export const createCinemaController = async (req, res, next) => {
@@ -28,7 +29,7 @@ export const deleteCinemaController = async (req, res, next) => {
         message: 'Cinema does not found',
       });
     }
-
+    await roomsService.deleteRoomByCinema(cinemaId);
     await cinemasService.deleteCinema(cinemaId);
     res.json({ message: 'Delete cinema successfully', success: true });
   } catch (e) {

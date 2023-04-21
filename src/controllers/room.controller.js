@@ -14,8 +14,24 @@ export const createRoomController = async (req, res, next) => {
       });
     }
 
-    await roomsService.createRoom(value);
-    res.json({ message: 'Create room successfully', success: true });
+    const room = await roomsService.createRoom(value);
+    const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+    const { id, name, row_number, column_number } = room.dataValues;
+    res.json({
+      message: 'Create room successfully',
+      room: {
+        id,
+        name,
+        rowNumber: row_number,
+        columnNumber: column_number,
+        cinema: {
+          id: cinema.dataValues.id,
+          name: cinema.dataValues.name,
+          address: cinema.dataValues.address,
+        },
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }
@@ -31,7 +47,7 @@ export const deleteRoomController = async (req, res, next) => {
         status: 404,
       });
     }
-    await seatsService.deleteSeat(roomId);
+    await seatsService.deleteSeatByRoom(roomId);
     await roomsService.deleteRoom(roomId);
     res.json({ message: 'Delete room successfully', success: true });
   } catch (e) {

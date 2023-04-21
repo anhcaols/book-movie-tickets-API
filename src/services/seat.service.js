@@ -13,7 +13,7 @@ export class SeatService {
     await SeatModel.bulkCreate(seat);
   }
 
-  async deleteSeat(roomId) {
+  async deleteSeatByRoom(roomId) {
     const seats = await SeatModel.findAll({
       where: { room_id: roomId },
     });
