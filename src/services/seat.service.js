@@ -5,6 +5,10 @@ export class SeatService {
     return await SeatModel.findAll({ offset, limit, where: { room_id: roomId } });
   }
 
+  async getSeats() {
+    return await SeatModel.findAll();
+  }
+
   async getSeatCountsByRoom(roomId) {
     return await SeatModel.count({ where: { room_id: roomId } });
   }
@@ -14,7 +18,7 @@ export class SeatService {
   }
 
   async createSeat(seat) {
-    await SeatModel.bulkCreate(seat);
+    return await SeatModel.bulkCreate(seat);
   }
 
   async deleteSeatByRoom(roomId) {

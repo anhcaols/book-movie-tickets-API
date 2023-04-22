@@ -2,6 +2,7 @@ import { SeatSeatSchema } from '../dto/seat.js';
 import { roomsService } from '../services/room.service.js';
 import { seatTypesService } from '../services/seat-type.service.js';
 import { seatsService } from '../services/seat.service.js';
+import { cinemasService } from '../services/cinema.service.js';
 import { utils } from '../utils/index.js';
 
 export const createSeatController = async (req, res, next) => {
@@ -47,9 +48,9 @@ export const createSeatController = async (req, res, next) => {
         });
       }
     }
-    await seatsService.createSeat(seats);
+    const seat = await seatsService.createSeat(seats);
 
-    res.json({ message: 'Create seat successfully', success: true });
+    res.json({ message: 'Create seat successfully', seat, success: true });
   } catch (e) {
     next(e);
   }
@@ -69,9 +70,35 @@ export const getSeatByRoomController = async (req, res, next) => {
     const totalDocs = await seatsService.getSeatCountsByRoom(roomId);
     const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
     const seats = await seatsService.getAllSeatsByRoom(roomId, offset, limit);
+
+    const data = await Promise.all(
+      seats.map(async (seat) => {
+        const { id, seat_type_id, room_id, row_position, column_position } = seat.dataValues;
+        const seatType = await seatTypesService.getSeatTypeById(seat_type_id);
+        const room = await roomsService.getRoomById(room_id);
+        const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+        return {
+          id,
+          seatType: {
+            id: seat_type_id,
+            type: seatType.dataValues.type,
+          },
+          room: {
+            id: room_id,
+            name: room.dataValues.name,
+            cinema: {
+              id: cinema.dataValues.id,
+              name: cinema.dataValues.name,
+            },
+          },
+          rowPosition: row_position,
+          columnPosition: column_position,
+        };
+      })
+    );
     res.json({
       message: 'Get seat by room successfully',
-      seats,
+      seats: data,
       paginationOptions: {
         totalDocs,
         offset,

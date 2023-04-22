@@ -115,3 +115,61 @@ export const getRoomController = async (req, res, next) => {
     next(e);
   }
 };
+
+export const getRoomsCreatedSeatsController = async (req, res, next) => {
+  try {
+    const rooms = await roomsService.getRooms();
+    const seats = await seatsService.getSeats();
+
+    const roomIds = seats.map((seat) => seat.dataValues.room_id);
+    const uniqueRoomIds = [...new Set(roomIds)];
+
+    const [roomCreatedSeats, roomHasNotCreatedSeats] = await Promise.all([
+      Promise.all(
+        rooms.map(async (room) => {
+          const foundRoomId = uniqueRoomIds.find((item) => item === room.dataValues.id);
+          if (foundRoomId) {
+            const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+            const { id, name } = room.dataValues;
+            return {
+              id,
+              name,
+              cinema: {
+                id: cinema.dataValues.id,
+                name: cinema.dataValues.name,
+                address: cinema.dataValues.address,
+              },
+            };
+          }
+        })
+      ),
+      Promise.all(
+        rooms.map(async (room) => {
+          const foundRoomId = uniqueRoomIds.find((item) => item === room.dataValues.id);
+          if (!foundRoomId) {
+            const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+            const { id, name } = room.dataValues;
+            return {
+              id,
+              name,
+              cinema: {
+                id: cinema.dataValues.id,
+                name: cinema.dataValues.name,
+                address: cinema.dataValues.address,
+              },
+            };
+          }
+        })
+      ),
+    ]);
+
+    res.json({
+      message: 'Get rooms successfully',
+      roomCreatedSeats: roomCreatedSeats.filter((item) => item !== undefined && item !== null),
+      roomHasNotCreatedSeats: roomHasNotCreatedSeats.filter((item) => item !== undefined && item !== null),
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
