@@ -6,6 +6,7 @@ import { statusSeatsService } from '../services/status-seat.service.js';
 import { moviesService } from '../services/movie.service.js';
 import { roomsService } from '../services/room.service.js';
 import { seatTypesService } from '../services/seat-type.service.js';
+import { utils } from '../utils/index.js';
 
 export const createStatusSeatController = async (req, res, next) => {
   try {
@@ -102,18 +103,10 @@ export const getAllStatusSeatController = async (req, res, next) => {
       });
     }
 
-    const movie = await moviesService.getMovieById(schedule.dataValues.movie_id);
-
-    const limit = parseInt(req.query.limit) || 8;
-    const page = req.query.page || 1;
-    const offset = (page - 1) * limit;
-
-    const statusSeats = await statusSeatsService.getAllStatusSeat(offset, limit, value.schedule_id);
     const totalDocs = await statusSeatsService.getCountStatusSeat(value.schedule_id);
-    const totalPages = Math.ceil(totalDocs / limit);
-
-    const hasPrevPage = page > 1;
-    const hasNextPage = page < totalPages;
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+    const statusSeats = await statusSeatsService.getAllStatusSeat(offset, limit, value.schedule_id);
+    const movie = await moviesService.getMovieById(schedule.dataValues.movie_id);
 
     const data = await Promise.all(
       statusSeats.map(async (statusSeat) => {
