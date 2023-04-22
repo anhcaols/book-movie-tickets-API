@@ -2,6 +2,7 @@ import { SeatSeatSchema } from '../dto/seat.js';
 import { roomsService } from '../services/room.service.js';
 import { seatTypesService } from '../services/seat-type.service.js';
 import { seatsService } from '../services/seat.service.js';
+import { utils } from '../utils/index.js';
 
 export const createSeatController = async (req, res, next) => {
   try {
@@ -49,6 +50,39 @@ export const createSeatController = async (req, res, next) => {
     await seatsService.createSeat(seats);
 
     res.json({ message: 'Create seat successfully', success: true });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getSeatByRoomController = async (req, res, next) => {
+  try {
+    const roomId = req.params.id;
+    const room = await roomsService.getRoomById(roomId);
+
+    if (!room) {
+      return res.status(404).json({
+        message: 'Room does not found',
+        status: 404,
+      });
+    }
+    const totalDocs = await seatsService.getSeatCountsByRoom(roomId);
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+    const seats = await seatsService.getAllSeatsByRoom(roomId, offset, limit);
+    res.json({
+      message: 'Get seat by room successfully',
+      seats,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page,
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

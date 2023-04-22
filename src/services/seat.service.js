@@ -1,8 +1,12 @@
 import { SeatModel } from '../models/seat.model.js';
 
 export class SeatService {
-  async getAllSeatsByRoom(roomId) {
-    return await SeatModel.findAll({ where: { room_id: roomId } });
+  async getAllSeatsByRoom(roomId, offset, limit) {
+    return await SeatModel.findAll({ offset, limit, where: { room_id: roomId } });
+  }
+
+  async getSeatCountsByRoom(roomId) {
+    return await SeatModel.count({ where: { room_id: roomId } });
   }
 
   async getSeatById(seatId) {
