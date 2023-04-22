@@ -31,7 +31,7 @@ export const createSeatController = async (req, res, next) => {
 
     const vipRows = value.row_vip;
     const seats = [];
-    const seatTypes = await seatTypesService.getAllSeatTypes();
+    const seatTypes = await seatTypesService.getSeatTypes();
     const seatVipId = seatTypes.find((seatType) => seatType.type === 'vip').dataValues.id;
     const seatNormalId = seatTypes.find((seatType) => seatType.type === 'normal').dataValues.id;
 
