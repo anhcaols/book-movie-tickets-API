@@ -86,15 +86,9 @@ export const updateStatusSeatController = async (req, res, next) => {
 
 export const getAllStatusSeatController = async (req, res, next) => {
   try {
-    const { error, value } = GetAllStatusSeatSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-        status: 400,
-      });
-    }
+    const scheduleId = req.params.id;
 
-    const schedule = await schedulesService.getScheduleById(value.schedule_id);
+    const schedule = await schedulesService.getScheduleById(scheduleId);
     if (!schedule) {
       return res.status(404).json({
         message: 'Schedule not found',
@@ -103,9 +97,9 @@ export const getAllStatusSeatController = async (req, res, next) => {
       });
     }
 
-    const totalDocs = await statusSeatsService.getCountStatusSeat(value.schedule_id);
+    const totalDocs = await statusSeatsService.getCountStatusSeat(scheduleId);
     const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
-    const statusSeats = await statusSeatsService.getAllStatusSeat(offset, limit, value.schedule_id);
+    const statusSeats = await statusSeatsService.getAllStatusSeat(offset, limit, scheduleId);
     const movie = await moviesService.getMovieById(schedule.dataValues.movie_id);
 
     const data = await Promise.all(

@@ -5,6 +5,7 @@ import { roomsService } from '../services/room.service.js';
 import { cinemasService } from '../services/cinema.service.js';
 import { statusSeatsService } from '../services/status-seat.service.js';
 import moment from 'moment';
+import { seatsService } from '../services/seat.service.js';
 
 export const createScheduleController = async (req, res, next) => {
   try {
@@ -31,6 +32,41 @@ export const createScheduleController = async (req, res, next) => {
       });
     }
     await schedulesService.createSchedule({ ...value, release_date: movie.dataValues.release_date });
+
+    // create status seats
+    const seats = await seatsService.getAllSeatsByRoom(value.room_id);
+    const schedules = await schedulesService.getScheduleByRoom(value.room_id);
+
+    if (seats.length === 0) {
+      return res.status(404).json({
+        message: 'Seats not found',
+        status: 404,
+      });
+    }
+
+    if (schedules.length === 0) {
+      return res.status(404).json({
+        message: 'Schedules not found',
+        status: 404,
+      });
+    }
+
+    const statusSeats = [];
+    for (const seat of seats) {
+      for (const schedule of schedules) {
+        // Check if the current seat has an existing status seat for the current schedule only
+        const existingStatusSeat = await statusSeatsService.getStatusSeat(seat.dataValues.id, schedule.dataValues.id);
+
+        if (!existingStatusSeat) {
+          const newStatus = await statusSeatsService.createStatusSeat({
+            seat_id: seat.dataValues.id,
+            schedule_id: schedule.dataValues.id,
+            status: 'available',
+          });
+          statusSeats.push(newStatus);
+        }
+      }
+    }
 
     res.json({ message: 'Create schedule successfully', success: true });
   } catch (e) {

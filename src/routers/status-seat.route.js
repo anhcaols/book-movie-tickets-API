@@ -12,4 +12,4 @@ export const statusSeatRouter = Router();
 
 statusSeatRouter.post('/status-seats', authMiddlewareByAdmin(), createStatusSeatController);
 statusSeatRouter.patch('/status-seats', authMiddlewareByAdmin(), updateStatusSeatController);
-statusSeatRouter.post('/status-seats/schedule', authMiddleware(), getAllStatusSeatController);
+statusSeatRouter.post('/status-seats/schedule/:id', authMiddleware(), getAllStatusSeatController);
