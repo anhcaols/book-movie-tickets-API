@@ -130,10 +130,12 @@ export const getRoomsCreatedSeatsController = async (req, res, next) => {
           const foundRoomId = uniqueRoomIds.find((item) => item === room.dataValues.id);
           if (foundRoomId) {
             const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
-            const { id, name } = room.dataValues;
+            const { id, name, row_number, column_number } = room.dataValues;
             return {
               id,
               name,
+              rowNumber: row_number,
+              columnNumber: column_number,
               cinema: {
                 id: cinema.dataValues.id,
                 name: cinema.dataValues.name,
@@ -148,10 +150,12 @@ export const getRoomsCreatedSeatsController = async (req, res, next) => {
           const foundRoomId = uniqueRoomIds.find((item) => item === room.dataValues.id);
           if (!foundRoomId) {
             const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
-            const { id, name } = room.dataValues;
+            const { id, name, row_number, column_number } = room.dataValues;
             return {
               id,
               name,
+              rowNumber: row_number,
+              columnNumber: column_number,
               cinema: {
                 id: cinema.dataValues.id,
                 name: cinema.dataValues.name,
@@ -165,8 +169,10 @@ export const getRoomsCreatedSeatsController = async (req, res, next) => {
 
     res.json({
       message: 'Get rooms successfully',
-      roomCreatedSeats: roomCreatedSeats.filter((item) => item !== undefined && item !== null),
-      roomHasNotCreatedSeats: roomHasNotCreatedSeats.filter((item) => item !== undefined && item !== null),
+      data: {
+        roomCreatedSeats: roomCreatedSeats.filter((item) => item !== undefined && item !== null),
+        roomHasNotCreatedSeats: roomHasNotCreatedSeats.filter((item) => item !== undefined && item !== null),
+      },
       success: true,
     });
   } catch (e) {

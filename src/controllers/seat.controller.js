@@ -48,9 +48,34 @@ export const createSeatController = async (req, res, next) => {
         });
       }
     }
-    const seat = await seatsService.createSeat(seats);
+    const newSeats = await seatsService.createSeat(seats);
+    const data = await Promise.all(
+      newSeats.map(async (seat) => {
+        const { id, seat_type_id, room_id, row_position, column_position } = seat.dataValues;
+        const seatType = await seatTypesService.getSeatTypeById(seat_type_id);
+        const room = await roomsService.getRoomById(room_id);
+        const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+        return {
+          id,
+          seatType: {
+            id: seat_type_id,
+            type: seatType.dataValues.type,
+          },
+          room: {
+            id: room_id,
+            name: room.dataValues.name,
+            cinema: {
+              id: cinema.dataValues.id,
+              name: cinema.dataValues.name,
+            },
+          },
+          rowPosition: row_position,
+          columnPosition: column_position,
+        };
+      })
+    );
 
-    res.json({ message: 'Create seat successfully', seat, success: true });
+    res.json({ message: 'Create seat successfully', seats: data, success: true });
   } catch (e) {
     next(e);
   }
