@@ -1,5 +1,6 @@
-import { SeatTypeSchema } from '../dto/seat-type.js';
+import { SeatTypeSchema, UpdateSeatTypeSchema } from '../dto/seat-type.js';
 import { seatTypesService } from '../services/seat-type.service.js';
+import { seatsService } from '../services/seat.service.js';
 import { utils } from '../utils/index.js';
 
 export const createSeatTypeController = async (req, res, next) => {
@@ -22,7 +23,14 @@ export const createSeatTypeController = async (req, res, next) => {
 
     const seatType = await seatTypesService.createSeatType(value);
 
-    res.json({ message: 'Create seat type successfully', seatType, success: true });
+    res.json({
+      message: 'Create seat type successfully',
+      seatType: {
+        ...seatType.dataValues,
+        price: String(seatType.dataValues.price),
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }
@@ -30,17 +38,17 @@ export const createSeatTypeController = async (req, res, next) => {
 
 export const deleteSeatTypeController = async (req, res, next) => {
   try {
-    // const seatTypeId = req.params.id;
-    // const seatType = await seatTypesService.getSeatType(seatTypeId);
-    // if (!seatType) {
-    //   return res.status(404).json({
-    //     message: 'Seat type does not found',
-    //     status: 404,
-    //   });
-    // }
-    // await seatsService.getAllSeatsByRoom();
-    // await seatTypesService.deleteSeatType(seatTypeId);
-    // res.json({ message: 'Create seat type successfully', success: true });
+    const seatTypeId = req.params.id;
+    const seatType = await seatTypesService.getSeatType(seatTypeId);
+    if (!seatType) {
+      return res.status(404).json({
+        message: 'Seat type does not found',
+        status: 404,
+      });
+    }
+    await seatsService.deleteSeatBySeatType(seatTypeId);
+    await seatTypesService.deleteSeatType(seatTypeId);
+    res.json({ message: 'Create seat type successfully', success: true });
   } catch (e) {
     next(e);
   }
@@ -49,7 +57,7 @@ export const deleteSeatTypeController = async (req, res, next) => {
 export const updateSeatTypeController = async (req, res, next) => {
   try {
     const seatTypeId = req.params.id;
-    const { error, value } = SeatTypeSchema.validate(req.body);
+    const { error, value } = UpdateSeatTypeSchema.validate(req.body);
     if (error) {
       return res.status(400).json({
         message: error.message,

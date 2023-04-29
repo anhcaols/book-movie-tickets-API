@@ -30,6 +30,16 @@ export class SeatService {
       await seat.destroy();
     });
   }
+
+  async deleteSeatBySeatType(seatTypeId) {
+    const seats = await SeatModel.findAll({
+      where: { seat_type_id: seatTypeId },
+    });
+
+    seats.map(async (seat) => {
+      await seat.destroy();
+    });
+  }
 }
 
 export const seatsService = new SeatService();

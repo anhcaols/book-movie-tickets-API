@@ -1,8 +1,8 @@
 import { SeatTypeModel } from '../models/seat-type.model.js';
 
 export class SeatTypeService {
-  async getSeatTypes() {
-    return await SeatTypeModel.findAll();
+  async getSeatTypes(offset, limit) {
+    return await SeatTypeModel.findAll({ offset, limit, order: [['id', 'DESC']] });
   }
 
   async getSeatTypeById(seatTypeId) {
