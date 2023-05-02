@@ -12,7 +12,7 @@ import {
 
 export const scheduleRouter = Router();
 
-scheduleRouter.post('/all-schedules', getAllScheduleController);
+scheduleRouter.get('/all-schedules', getAllScheduleController);
 scheduleRouter.post('/schedules', authMiddlewareByAdmin(), createScheduleController);
 scheduleRouter.post('/all-schedules/movie', getAllScheduleByMovieController);
 scheduleRouter.delete('/schedules/:id', authMiddlewareByAdmin(), deleteScheduleController);

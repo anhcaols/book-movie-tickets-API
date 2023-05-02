@@ -6,6 +6,7 @@ import { cinemasService } from '../services/cinema.service.js';
 import { statusSeatsService } from '../services/status-seat.service.js';
 import moment from 'moment';
 import { seatsService } from '../services/seat.service.js';
+import { utils } from '../utils/index.js';
 
 export const createScheduleController = async (req, res, next) => {
   try {
@@ -76,33 +77,21 @@ export const createScheduleController = async (req, res, next) => {
 
 export const getAllScheduleController = async (req, res, next) => {
   try {
-    const { error, value } = GetAllSchedulesSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        message: error.message,
-        status: 400,
-      });
-    }
-    const limit = parseInt(req.query.limit) || 10;
-    const page = req.query.page || 1;
-    const offset = (page - 1) * limit;
-
-    if (value.start_time) {
-      value.start_time = moment(value.start_time).format();
-    }
-    const schedules = await schedulesService.getAllSchedules(offset, limit, value);
-    const totalDocs = await schedulesService.getScheduleCount(value);
-    const totalPages = Math.ceil(totalDocs / limit);
-    const hasPrevPage = page > 1;
-    const hasNextPage = page < totalPages;
+    const totalDocs = await schedulesService.getScheduleCount();
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+    const schedules = await schedulesService.getAllSchedules(offset, limit);
 
     const data = await Promise.all(
       schedules.map(async (schedule) => {
         const room = await roomsService.getRoomById(schedule.dataValues.room_id);
         const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+        const movie = await moviesService.getMovieById(schedule.dataValues.movie_id);
         return {
           id: schedule.dataValues.id,
-          movieId: schedule.dataValues.movie_id,
+          movie: {
+            id: movie.dataValues.id,
+            name: movie.dataValues.name,
+          },
           startTime: schedule.dataValues.start_time,
           endTime: schedule.dataValues.end_time,
           releaseDate: schedule.dataValues.release_date,
