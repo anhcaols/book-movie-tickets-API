@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { ScheduleModel } from '../models/schedule.model.js';
+import { DbService } from './db-service.js';
 
 export class ScheduleService {
   async getScheduleByRoom(roomId) {
@@ -14,14 +15,20 @@ export class ScheduleService {
     return await ScheduleModel.findAll({
       offset,
       limit,
+      order: [['id', 'DESC']],
       where: condition,
     });
   }
 
-  async getAllSchedulesByMovie(movieId) {
+  async getAllSchedulesByMovie(movieId, dateTime) {
+    console.log(dateTime);
     return await ScheduleModel.findAll({
       where: {
         movie_id: movieId,
+        start_time: DbService.sequelize.where(
+          DbService.sequelize.fn('date', DbService.sequelize.col('start_time')),
+          dateTime
+        ),
       },
     });
   }

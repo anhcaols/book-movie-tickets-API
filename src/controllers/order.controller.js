@@ -12,6 +12,7 @@ import { accountsService } from '../services/account.service.js';
 import { moviesService } from '../services/movie.service.js';
 import { roomsService } from '../services/room.service.js';
 import { cinemasService } from '../services/cinema.service.js';
+import { utils } from '../utils/index.js';
 
 export const createOrderController = async (req, res, next) => {
   try {
@@ -143,33 +144,40 @@ export const deleteOrderController = async (req, res, next) => {
 export const getUserOrdersController = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const account = await accountsService.getAccountById(userId);
-    if (!account) {
-      return res.status(404).json({
-        message: 'Account does not found',
-        status: 404,
-      });
+    if (userId !== 'all') {
+      const account = await accountsService.getAccountById(userId);
+      if (!account) {
+        return res.status(404).json({
+          message: 'Account does not found',
+          status: 404,
+        });
+      }
     }
 
-    const orders = await ordersService.getAllOrdersByUser(userId);
+    const totalDocs = await ordersService.getOrderCountsByUser(userId);
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+
+    const orders = await ordersService.getAllOrdersByUser(offset, limit, userId);
     const data = await Promise.all(
       orders.map(async (order) => {
         let seats = [];
         let movieName = '';
         let cinemaName = '';
         let startTime = '';
+        let roomName = '';
         const tickets = await ticketsService.getAllTicketsByOrderId(order.dataValues.id);
+
         // Get movie, cinema, startTime form schedule
         if (tickets.length > 0) {
           const schedule = await schedulesService.getScheduleById(tickets[0].dataValues.schedule_id);
           const movie = await moviesService.getMovieById(schedule.dataValues.movie_id);
           movieName = movie.dataValues.name;
           const room = await roomsService.getRoomById(schedule.dataValues.room_id);
+          roomName = room.dataValues.name;
           const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
           cinemaName = cinema.dataValues.name;
           startTime = moment(schedule.dataValues.start_time).format();
         }
-
         // Get seats
         for (const ticket of tickets) {
           const seat = await seatsService.getSeatById(ticket.dataValues.seat_id);
@@ -185,15 +193,26 @@ export const getUserOrdersController = async (req, res, next) => {
         const orderDetails = await orderDetailsService.getOrderDetailByOrderId(order.dataValues.id);
         for (const orderDetail of orderDetails) {
           const food = await foodsService.getFoodById(orderDetail.dataValues.food_id);
-          foods.push(food.dataValues.name);
+          foods.push({ id: food.dataValues.id, name: food.dataValues.name });
         }
+
+        const account = await accountsService.getAccountById(userId);
+
         return {
           id: order.dataValues.id,
+          user: {
+            id: account.dataValues.id,
+            fullName: account.dataValues.full_name,
+            email: account.dataValues.email,
+            phoneNumber: account.dataValues.phone_number,
+            role: account.dataValues.role,
+          },
           seats,
           schedule: {
             movieName,
             cinemaName,
             startTime,
+            roomName,
           },
           foods,
           totalAmount: Number(order.dataValues.total_amount),
@@ -202,7 +221,20 @@ export const getUserOrdersController = async (req, res, next) => {
       })
     );
 
-    res.json({ message: 'Get all the order of each user', data, success: true });
+    res.json({
+      message: 'Get all the order of each user',
+      orders: data,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page,
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

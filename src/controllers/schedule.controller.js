@@ -132,7 +132,10 @@ export const getAllScheduleByMovieController = async (req, res, next) => {
         status: 400,
       });
     }
-    const schedules = await schedulesService.getAllSchedulesByMovie(value.movie_id);
+    const schedules = await schedulesService.getAllSchedulesByMovie(
+      value.movie_id,
+      moment(value.date_time).format('YYYY-MM-DD')
+    );
 
     let cinemas = [];
     let rooms = [];
@@ -213,20 +216,19 @@ export const getAllScheduleByMovieController = async (req, res, next) => {
       });
     });
 
-    const filteredSchedules = scheduleList.filter((schedule) => {
+    const filteredSchedulesByRoom = scheduleList.filter((schedule) => {
       const isMatchedDate = schedule.showTimes.some((showTime) => {
         return showTime.startTime.startsWith(moment(value.date_time).format('YYYY-MM-DD'));
       });
       const isMatchedCinema = schedule.room.cinemaName.includes(value.cinema_name);
       const isMatchedCity = schedule.room.cinemaAddress.includes(value.city);
-
       return isMatchedDate && isMatchedCinema && isMatchedCity;
     });
 
     res.json({
       message: 'Get all schedules successfully',
       schedules: filteredSchedulesByDate,
-      filterSchedules: filteredSchedules,
+      filterSchedules: filteredSchedulesByRoom,
       success: true,
     });
   } catch (e) {

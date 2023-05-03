@@ -5,10 +5,29 @@ export class OrderService {
     return await OrderModel.findByPk(orderId);
   }
 
-  async getAllOrdersByUser(userId) {
-    return await OrderModel.findAll({
-      user_id: userId,
-    });
+  async getAllOrdersByUser(offset, limit, userId) {
+    if (userId === 'all') {
+      return await OrderModel.findAll({ offset, limit, order: [['id', 'DESC']] });
+    } else {
+      return await OrderModel.findAll({
+        offset,
+        limit,
+        order: [['id', 'DESC']],
+        where: {
+          user_id: userId,
+        },
+      });
+    }
+  }
+
+  async getOrderCountsByUser(userId) {
+    if (userId === 'all') {
+      return await OrderModel.count();
+    } else {
+      return await OrderModel.count({
+        where: { user_id: userId },
+      });
+    }
   }
 
   async createOrder(order) {
