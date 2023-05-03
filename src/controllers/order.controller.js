@@ -160,6 +160,7 @@ export const getUserOrdersController = async (req, res, next) => {
     const orders = await ordersService.getAllOrdersByUser(offset, limit, userId);
     const data = await Promise.all(
       orders.map(async (order) => {
+        const account = await accountsService.getAccountById(order.dataValues.user_id);
         let seats = [];
         let movieName = '';
         let cinemaName = '';
@@ -195,8 +196,6 @@ export const getUserOrdersController = async (req, res, next) => {
           const food = await foodsService.getFoodById(orderDetail.dataValues.food_id);
           foods.push({ id: food.dataValues.id, name: food.dataValues.name });
         }
-
-        const account = await accountsService.getAccountById(userId);
 
         return {
           id: order.dataValues.id,

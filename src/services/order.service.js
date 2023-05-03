@@ -6,6 +6,7 @@ export class OrderService {
   }
 
   async getAllOrdersByUser(offset, limit, userId) {
+    console.log(userId);
     if (userId === 'all') {
       return await OrderModel.findAll({ offset, limit, order: [['id', 'DESC']] });
     } else {
