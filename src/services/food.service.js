@@ -5,8 +5,12 @@ export class FoodService {
     return await FoodModel.findByPk(foodId);
   }
 
-  async getFoods() {
-    return await FoodModel.findAll();
+  async getFoods(offset, limit) {
+    return await FoodModel.findAll({ offset, limit, order: [['id', 'DESC']] });
+  }
+
+  async getFoodCounts() {
+    return await FoodModel.count();
   }
 
   async createFood(food) {

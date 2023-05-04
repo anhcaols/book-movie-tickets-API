@@ -5,6 +5,7 @@ import { authMiddleware, authMiddlewareByAdmin } from '../middlewares/auth.middl
 import {
   createFoodController,
   deleteFoodController,
+  getFoodController,
   getFoodsController,
   updateFoodController,
 } from '../controllers/food.controller.js';
@@ -23,6 +24,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 foodRouter.get('/foods', authMiddleware(), getFoodsController);
+foodRouter.get('/foods/:id', authMiddlewareByAdmin(), getFoodController);
 foodRouter.post('/foods', authMiddlewareByAdmin(), upload.single('image'), createFoodController);
 foodRouter.delete('/foods/:id', authMiddlewareByAdmin(), deleteFoodController);
 foodRouter.patch('/foods/:id', authMiddlewareByAdmin(), upload.single('image'), updateFoodController);

@@ -1,6 +1,7 @@
 import { FoodSchema } from '../dto/food.js';
 import { foodsService } from '../services/food.service.js';
 import fs from 'fs';
+import { utils } from '../utils/index.js';
 
 export const createFoodController = async (req, res, next) => {
   try {
@@ -81,7 +82,8 @@ export const updateFoodController = async (req, res, next) => {
     });
 
     await foodsService.updateFood({ ...value, image: req.file.filename }, foodId);
-    res.json({ message: 'Update food successfully', success: true });
+    const newFood = await foodsService.getFoodById(foodId);
+    res.json({ message: 'Update food successfully', food: newFood.dataValues, success: true });
   } catch (e) {
     next(e);
   }
@@ -89,8 +91,33 @@ export const updateFoodController = async (req, res, next) => {
 
 export const getFoodsController = async (req, res, next) => {
   try {
-    const foods = await foodsService.getFoods();
-    res.json({ message: 'Get foods successfully', foods, success: true });
+    const totalDocs = await foodsService.getFoodCounts();
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+    const foods = await foodsService.getFoods(offset, limit);
+    res.json({
+      message: 'Get foods successfully',
+      foods,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page,
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getFoodController = async (req, res, next) => {
+  try {
+    const foodId = req.params.id;
+    const food = await foodsService.getFoodById(foodId);
+    res.json({ message: 'Get foods successfully', food, success: true });
   } catch (e) {
     next(e);
   }
