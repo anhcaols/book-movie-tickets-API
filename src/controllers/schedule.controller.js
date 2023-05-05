@@ -1,4 +1,4 @@
-import { GetAllSchedulesSchema, ScheduleSchema } from '../dto/schedule.js';
+import { GetAllSchedulesSchema, ScheduleSchema, UpdateSchema } from '../dto/schedule.js';
 import { schedulesService } from '../services/schedule.service.js';
 import { moviesService } from '../services/movie.service.js';
 import { roomsService } from '../services/room.service.js';
@@ -25,6 +25,17 @@ export const createScheduleController = async (req, res, next) => {
         status: 404,
       });
     }
+
+    const room = await roomsService.getRoomById(value.room_id);
+    if (!room) {
+      return res.status(404).json({
+        message: 'Room does not found',
+        status: 404,
+      });
+    }
+
+    const cinema = await cinemasService.getCinemaById(room.dataValues.cinema_id);
+
     const schedule = await schedulesService.existingSchedule(value.room_id, value.start_time, value.end_time);
     if (schedule) {
       return res.status(404).json({
@@ -32,7 +43,10 @@ export const createScheduleController = async (req, res, next) => {
         status: 404,
       });
     }
-    await schedulesService.createSchedule({ ...value, release_date: movie.dataValues.release_date });
+    const newSchedule = await schedulesService.createSchedule({
+      ...value,
+      release_date: movie.dataValues.release_date,
+    });
 
     // create status seats
     const seats = await seatsService.getAllSeatsByRoom(value.room_id);
@@ -69,7 +83,24 @@ export const createScheduleController = async (req, res, next) => {
       }
     }
 
-    res.json({ message: 'Create schedule successfully', success: true });
+    const data = {
+      id: newSchedule.dataValues.id,
+      movie: {
+        id: movie.dataValues.id,
+        name: movie.dataValues.name,
+      },
+      startTime: newSchedule.dataValues.start_time,
+      endTime: newSchedule.dataValues.end_time,
+      releaseDate: newSchedule.dataValues.release_date,
+      room: {
+        id: room.dataValues.id,
+        roomName: room.dataValues.name,
+        cinemaName: cinema.dataValues.name,
+        cinemaAddress: cinema.dataValues.address,
+      },
+    };
+
+    res.json({ message: 'Create schedule successfully', schedule: data, success: true });
   } catch (e) {
     next(e);
   }
@@ -260,7 +291,7 @@ export const deleteScheduleController = async (req, res, next) => {
 
 export const updateScheduleController = async (req, res, next) => {
   try {
-    const { error, value } = ScheduleSchema.validate(req.body);
+    const { error, value } = UpdateSchema.validate(req.body);
     if (error) {
       return res.status(400).json({
         message: error.message,

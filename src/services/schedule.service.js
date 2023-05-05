@@ -40,7 +40,7 @@ export class ScheduleService {
   }
 
   async createSchedule(schedule) {
-    await ScheduleModel.create(schedule);
+    return await ScheduleModel.create(schedule);
   }
 
   async deleteSchedule(scheduleId) {

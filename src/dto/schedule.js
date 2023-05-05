@@ -7,6 +7,11 @@ export const ScheduleSchema = Joi.object({
   end_time: Joi.date().required(),
 });
 
+export const UpdateSchema = Joi.object({
+  start_time: Joi.date().required(),
+  end_time: Joi.date().required(),
+});
+
 export const GetAllSchedulesSchema = Joi.object({
   movie_id: Joi.number().required(),
   cinema_name: Joi.string(),
