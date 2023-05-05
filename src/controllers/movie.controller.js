@@ -4,6 +4,7 @@ import { movieGenreServiceService } from '../services/movie-genre.service.js';
 import fs from 'fs';
 import slugify from 'slugify';
 import { ratingsService } from '../services/rating.service.js';
+import { utils } from '../utils/index.js';
 
 export const createMovieController = async (req, res, next) => {
   try {
@@ -115,16 +116,9 @@ export const updateMovieController = async (req, res, next) => {
 };
 
 export const getMoviesController = async (req, res, next) => {
-  const limit = parseInt(req.query.limit) || 8;
-  const page = req.query.page || 1;
-  const offset = (page - 1) * limit;
-
-  const movies = await moviesService.getMovies(offset, limit);
   const totalDocs = await moviesService.getMoviesCount();
-  const totalPages = Math.ceil(totalDocs / limit);
-
-  const hasPrevPage = page > 1;
-  const hasNextPage = page < totalPages;
+  const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+  const movies = await moviesService.getMovies(offset, limit);
 
   const data = await Promise.all(
     movies.map(async (movie) => {
@@ -160,16 +154,9 @@ export const getMoviesController = async (req, res, next) => {
 };
 
 export const getNowShowingMoviesController = async (req, res, next) => {
-  const limit = parseInt(req.query.limit) || 8;
-  const page = req.query.page || 1;
-  const offset = (page - 1) * limit;
-
-  const nowShowingMovies = await moviesService.getMovies(offset, limit, { status: 1 });
   const totalDocs = await moviesService.getMoviesCount({ status: 1 });
-  const totalPages = Math.ceil(totalDocs / limit);
-
-  const hasPrevPage = page > 1;
-  const hasNextPage = page < totalPages;
+  const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+  const nowShowingMovies = await moviesService.getMovies(offset, limit, { status: 1 });
 
   const data = await Promise.all(
     nowShowingMovies.map(async (movie) => {
@@ -205,16 +192,9 @@ export const getNowShowingMoviesController = async (req, res, next) => {
 };
 
 export const getComingSoonMoviesController = async (req, res, next) => {
-  const limit = parseInt(req.query.limit) || 8;
-  const page = req.query.page || 1;
-  const offset = (page - 1) * limit;
-
-  const comingSoonMovies = await moviesService.getMovies(offset, limit, { status: 0 });
   const totalDocs = await moviesService.getMoviesCount({ status: 0 });
-  const totalPages = Math.ceil(totalDocs / limit);
-
-  const hasPrevPage = page > 1;
-  const hasNextPage = page < totalPages;
+  const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+  const comingSoonMovies = await moviesService.getMovies(offset, limit, { status: 0 });
 
   const data = await Promise.all(
     comingSoonMovies.map(async (movie) => {
