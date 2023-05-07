@@ -132,7 +132,27 @@ export const updateMovieController = async (req, res, next) => {
     });
 
     await moviesService.updateMovie({ ...value, image: req.file.filename, slug }, movieId);
-    res.json({ message: 'Update genre successfully', success: true });
+
+    const movieUpdate = await moviesService.getMovieBySlug(slug);
+    const movieGenres = await movieGenreServiceService.getMovieGenreById(movieUpdate.dataValues.id);
+    const genres = await Promise.all(
+      movieGenres.map(async (movieGenre) => {
+        const genre = await genresService.getGenreById(movieGenre.dataValues.genre_id);
+        return genre;
+      })
+    );
+    const scoreRate = await handleGetScoreRate(movieId);
+    const newMovie = handleNewMovie(movieUpdate);
+
+    res.json({
+      message: 'Update genre successfully',
+      movie: {
+        ...newMovie,
+        genres,
+        scoreRate,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }
