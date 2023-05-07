@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { GenresModel } from '../models/genre.model.js';
 import { MovieGenreModel } from '../models/movie-genre.model.js';
 import { MovieModel } from '../models/movie.model.js';
@@ -55,6 +56,28 @@ export class MovieService {
   async updateMovie(newMovie, movieId) {
     return await MovieModel.update(newMovie, {
       where: { id: movieId },
+    });
+  }
+
+  async searchMovie(offset, limit, keyword) {
+    return await MovieModel.findAll({
+      offset,
+      limit,
+      where: {
+        name: {
+          [Op.like]: `%${keyword}%`,
+        },
+      },
+    });
+  }
+
+  async getMoviesCountByKeyword(keyword) {
+    return await MovieModel.count({
+      where: {
+        name: {
+          [Op.like]: `%${keyword}%`,
+        },
+      },
     });
   }
 }

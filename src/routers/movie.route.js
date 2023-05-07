@@ -7,6 +7,7 @@ import {
   getMovieController,
   getMoviesController,
   getNowShowingMoviesController,
+  searchMovieController,
   updateMovieController,
 } from '../controllers/movie.controller.js';
 import multer from 'multer';
@@ -29,6 +30,7 @@ movieRouter.get('/movies/now-showing', getNowShowingMoviesController);
 movieRouter.get('/movies/coming-soon', getComingSoonMoviesController);
 movieRouter.get('/movies/:slug', getMovieController);
 
+movieRouter.post('/movies/search', searchMovieController);
 movieRouter.post('/movies', authMiddlewareByAdmin(), upload.single('image'), createMovieController);
 movieRouter.delete('/movies/:id', authMiddlewareByAdmin(), deleteMovieController);
 movieRouter.patch('/movies/:id', authMiddlewareByAdmin(), upload.single('image'), updateMovieController);

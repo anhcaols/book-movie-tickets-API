@@ -16,3 +16,7 @@ export const MovieSchema = Joi.object({
   image: Joi.string(),
   trailer: Joi.string(),
 });
+
+export const MovieSearchSchema = Joi.object({
+  keyword: Joi.string().required(),
+});

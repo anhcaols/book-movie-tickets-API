@@ -1,4 +1,4 @@
-import { MovieSchema } from '../dto/movie.js';
+import { MovieSchema, MovieSearchSchema } from '../dto/movie.js';
 import { moviesService } from '../services/movie.service.js';
 import { movieGenreServiceService } from '../services/movie-genre.service.js';
 import fs from 'fs';
@@ -319,6 +319,59 @@ export const getMovieController = async (req, res, next) => {
         ...newMovie,
         genres,
         scoreRate,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const searchMovieController = async (req, res, next) => {
+  try {
+    const { error, value } = MovieSearchSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
+
+    const totalDocs = await moviesService.getMoviesCountByKeyword(value.keyword);
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+    const nowShowingMovies = await moviesService.searchMovie(offset, limit, value.keyword);
+
+    const data = await Promise.all(
+      nowShowingMovies.map(async (movie) => {
+        const movieGenres = await movieGenreServiceService.getMovieGenreById(movie.dataValues.id);
+        const genres = await Promise.all(
+          movieGenres.map(async (movieGenre) => {
+            const genre = await genresService.getGenreById(movieGenre.dataValues.genre_id);
+            return genre;
+          })
+        );
+        const movieId = movie.dataValues.id;
+        const scoreRate = await handleGetScoreRate(movieId);
+        const newMovie = handleNewMovie(movie);
+        return {
+          ...newMovie,
+          genres,
+          scoreRate,
+        };
+      })
+    );
+
+    res.json({
+      message: 'Search movies successfully',
+      movies: data,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page: Number(page),
+        hasNextPage,
+        hasPrevPage,
       },
       success: true,
     });
