@@ -9,11 +9,11 @@ export class MovieService {
       limit,
       where: condition,
       // order: [['id', 'DESC']],
-      include: {
-        model: GenresModel,
-        attributes: ['name'],
-        through: { attributes: [] },
-      },
+      // include: {
+      //   model: GenresModel,
+      //   attributes: ['name'],
+      //   through: { attributes: [] },
+      // },
     });
   }
 
@@ -32,14 +32,9 @@ export class MovieService {
   }
 
   async getMovieBySlug(slug) {
-    return await MovieModel.findAll({
+    return await MovieModel.findOne({
       where: {
         slug: slug,
-      },
-      include: {
-        model: GenresModel,
-        attributes: ['name'],
-        through: { attributes: [] },
       },
     });
   }

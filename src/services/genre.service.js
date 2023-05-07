@@ -9,6 +9,14 @@ export class GenreService {
     });
   }
 
+  async getGenres(offset, limit) {
+    return await GenresModel.findAll({ offset, limit });
+  }
+
+  async getGenreCounts() {
+    return await GenresModel.count();
+  }
+
   async createGenre(genre) {
     await GenresModel.create(genre);
   }
@@ -29,4 +37,4 @@ export class GenreService {
   }
 }
 
-export const genresServiceService = new GenreService();
+export const genresService = new GenreService();

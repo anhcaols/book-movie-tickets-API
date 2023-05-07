@@ -1,5 +1,6 @@
 import { GenreSchema } from '../dto/genre.js';
-import { genresServiceService } from '../services/genre.service.js';
+import { genresService } from '../services/genre.service.js';
+import { utils } from '../utils/index.js';
 
 export const createGenderController = async (req, res, next) => {
   try {
@@ -11,7 +12,7 @@ export const createGenderController = async (req, res, next) => {
       });
     }
 
-    await genresServiceService.createGenre(value);
+    await genresService.createGenre(value);
     res.json({ message: 'Create genre successfully', success: true });
   } catch (e) {
     next(e);
@@ -21,7 +22,7 @@ export const createGenderController = async (req, res, next) => {
 export const deleteGenderController = async (req, res, next) => {
   try {
     const genreId = req.params.id;
-    const genre = await genresServiceService.getGenreById(genreId);
+    const genre = await genresService.getGenreById(genreId);
     if (!genre) {
       return res.status(404).json({
         message: 'Genre does not found',
@@ -29,7 +30,7 @@ export const deleteGenderController = async (req, res, next) => {
       });
     }
 
-    await genresServiceService.deleteGenre(genreId);
+    await genresService.deleteGenre(genreId);
     res.json({ message: 'Delete genre successfully', success: true });
   } catch (e) {
     next(e);
@@ -46,7 +47,7 @@ export const updateGenderController = async (req, res, next) => {
     }
 
     const genreId = req.params.id;
-    const genre = await genresServiceService.getGenreById(genreId);
+    const genre = await genresService.getGenreById(genreId);
     if (!genre) {
       return res.status(404).json({
         message: 'Genre does not found',
@@ -54,8 +55,33 @@ export const updateGenderController = async (req, res, next) => {
       });
     }
 
-    await genresServiceService.updateGenre(value, genreId);
+    await genresService.updateGenre(value, genreId);
     res.json({ message: 'Update genre successfully', success: true });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getGendersController = async (req, res, next) => {
+  try {
+    const totalDocs = await genresService.getGenreCounts();
+    const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
+    const genres = await genresService.getGenres(offset, limit);
+
+    res.json({
+      message: 'Get genres successfully',
+      genres,
+      paginationOptions: {
+        totalDocs,
+        offset,
+        limit,
+        totalPages,
+        page,
+        hasNextPage,
+        hasPrevPage,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

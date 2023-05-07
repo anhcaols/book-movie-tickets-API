@@ -58,6 +58,15 @@ export class RatingService {
     }
   }
 
+  async deleteRatingByMovie(movieId) {
+    const ratings = await RatingModel.findAll({
+      where: { movie_id: movieId },
+    });
+    ratings.map(async (rating) => {
+      await rating.destroy();
+    });
+  }
+
   async updateRating(newRating, ratingId) {
     return await RatingModel.update(newRating, {
       where: { id: ratingId },

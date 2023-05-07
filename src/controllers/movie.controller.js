@@ -5,6 +5,7 @@ import fs from 'fs';
 import slugify from 'slugify';
 import { ratingsService } from '../services/rating.service.js';
 import { utils } from '../utils/index.js';
+import { genresService } from '../services/genre.service.js';
 
 export const createMovieController = async (req, res, next) => {
   try {
@@ -24,13 +25,34 @@ export const createMovieController = async (req, res, next) => {
       locale: 'vi',
       trim: true,
     });
-    const genres = value.genre_id.split(',');
+    const genresReceive = value.genre_id;
+    console.log(genresReceive);
     const response = await moviesService.createMovie({ ...value, image: req.file.filename, slug });
-    genres.map(async (genre) => {
+    genresReceive.map(async (genre) => {
       await movieGenreServiceService.createMovieGenre({ movie_id: response.dataValues.id, genre_id: Number(genre) });
     });
 
-    res.json({ message: 'Create movie successfully', success: true });
+    const movie = await moviesService.getMovieBySlug(slug);
+    const movieGenres = await movieGenreServiceService.getMovieGenreById(movie.dataValues.id);
+    const genres = await Promise.all(
+      movieGenres.map(async (movieGenre) => {
+        const genre = await genresService.getGenreById(movieGenre.dataValues.genre_id);
+        return genre;
+      })
+    );
+    const movieId = movie.dataValues.id;
+    const scoreRate = await handleGetScoreRate(movieId);
+    const newMovie = handleNewMovie(movie);
+
+    res.json({
+      message: 'Create movie successfully',
+      movie: {
+        ...newMovie,
+        genres,
+        scoreRate,
+      },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }
@@ -56,6 +78,7 @@ export const deleteMovieController = async (req, res, next) => {
     }
 
     await moviesService.deleteMovie(movieId);
+    await ratingsService.deleteRatingByMovie(movieId);
     await movieGenreServiceService.deleteMovieGenre(movieId);
 
     res.json({ message: 'Delete movie successfully', success: true });
@@ -122,13 +145,19 @@ export const getMoviesController = async (req, res, next) => {
 
   const data = await Promise.all(
     movies.map(async (movie) => {
-      const genres = movie.genres.map((genre) => genre.name);
+      const movieGenres = await movieGenreServiceService.getMovieGenreById(movie.dataValues.id);
+      const genres = await Promise.all(
+        movieGenres.map(async (movieGenre) => {
+          const genre = await genresService.getGenreById(movieGenre.dataValues.genre_id);
+          return genre;
+        })
+      );
       const movieId = movie.dataValues.id;
       const scoreRate = await handleGetScoreRate(movieId);
       const newMovie = handleNewMovie(movie);
       return {
         ...newMovie,
-        genres: [...genres],
+        genres,
         scoreRate,
       };
     })
@@ -160,13 +189,19 @@ export const getNowShowingMoviesController = async (req, res, next) => {
 
   const data = await Promise.all(
     nowShowingMovies.map(async (movie) => {
-      const genres = movie.genres.map((genre) => genre.name);
+      const movieGenres = await movieGenreServiceService.getMovieGenreById(movie.dataValues.id);
+      const genres = await Promise.all(
+        movieGenres.map(async (movieGenre) => {
+          const genre = await genresService.getGenreById(movieGenre.dataValues.genre_id);
+          return genre;
+        })
+      );
       const movieId = movie.dataValues.id;
       const scoreRate = await handleGetScoreRate(movieId);
       const newMovie = handleNewMovie(movie);
       return {
         ...newMovie,
-        genres: [...genres],
+        genres,
         scoreRate,
       };
     })
@@ -198,14 +233,19 @@ export const getComingSoonMoviesController = async (req, res, next) => {
 
   const data = await Promise.all(
     comingSoonMovies.map(async (movie) => {
-      const genres = movie.genres.map((genre) => genre.name);
+      const movieGenres = await movieGenreServiceService.getMovieGenreById(movie.dataValues.id);
+      const genres = await Promise.all(
+        movieGenres.map(async (movieGenre) => {
+          const genre = await genresService.getGenreById(movieGenre.dataValues.genre_id);
+          return genre;
+        })
+      );
       const movieId = movie.dataValues.id;
       const scoreRate = await handleGetScoreRate(movieId);
       const newMovie = handleNewMovie(movie);
-
       return {
         ...newMovie,
-        genres: [...genres],
+        genres,
         scoreRate,
       };
     })
@@ -241,24 +281,25 @@ export const getMovieController = async (req, res, next) => {
     });
   }
 
-  const data = await Promise.all(
-    movie.map(async (movie) => {
-      const genres = movie.genres.map((genre) => genre.name);
-      const movieId = movie.dataValues.id;
-      const scoreRate = await handleGetScoreRate(movieId);
-      const newMovie = handleNewMovie(movie);
-      return {
-        ...newMovie,
-        genres: [...genres],
-        scoreRate,
-      };
+  const movieGenres = await movieGenreServiceService.getMovieGenreById(movie.dataValues.id);
+  const genres = await Promise.all(
+    movieGenres.map(async (movieGenre) => {
+      const genre = await genresService.getGenreById(movieGenre.dataValues.genre_id);
+      return genre;
     })
   );
+  const movieId = movie.dataValues.id;
+  const scoreRate = await handleGetScoreRate(movieId);
+  const newMovie = handleNewMovie(movie);
 
   try {
     res.json({
       message: 'Get coming soon movies successfully',
-      movie: data[0],
+      movie: {
+        ...newMovie,
+        genres,
+        scoreRate,
+      },
       success: true,
     });
   } catch (e) {
