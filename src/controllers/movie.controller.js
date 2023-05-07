@@ -26,7 +26,7 @@ export const createMovieController = async (req, res, next) => {
       trim: true,
     });
     const genresReceive = value.genre_id;
-    console.log(genresReceive);
+
     const response = await moviesService.createMovie({ ...value, image: req.file.filename, slug });
     genresReceive.map(async (genre) => {
       await movieGenreServiceService.createMovieGenre({ movie_id: response.dataValues.id, genre_id: Number(genre) });

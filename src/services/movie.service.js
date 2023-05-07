@@ -8,12 +8,12 @@ export class MovieService {
       offset,
       limit,
       where: condition,
-      // order: [['id', 'DESC']],
-      // include: {
-      //   model: GenresModel,
-      //   attributes: ['name'],
-      //   through: { attributes: [] },
-      // },
+      order: [['id', 'DESC']],
+      include: {
+        model: GenresModel,
+        attributes: ['name'],
+        through: { attributes: [] },
+      },
     });
   }
 
