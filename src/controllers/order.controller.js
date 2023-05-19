@@ -217,6 +217,7 @@ export const getUserOrdersController = async (req, res, next) => {
           foods,
           totalAmount: Number(order.dataValues.total_amount),
           orderDate: order.dataValues.order_date,
+          status: order.dataValues.status,
         };
       })
     );
