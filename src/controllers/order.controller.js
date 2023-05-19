@@ -51,6 +51,7 @@ export const createOrderController = async (req, res, next) => {
       user_id: userId,
       order_date: dateNow,
       total_amount: 0,
+      status: 0,
     });
 
     // Create ticket & total cost of tickets & update status seat

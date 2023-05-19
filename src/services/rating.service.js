@@ -17,6 +17,7 @@ export class RatingService {
       where: {
         movie_id: movieId,
       },
+      order: [['id', 'DESC']],
     });
   }
 
@@ -37,7 +38,7 @@ export class RatingService {
   }
 
   async createRating(rating) {
-    await RatingModel.create(rating);
+    return await RatingModel.create(rating);
   }
 
   async existingRating(movieId, userId) {

@@ -45,7 +45,6 @@ export const createScheduleController = async (req, res, next) => {
     }
     const newSchedule = await schedulesService.createSchedule({
       ...value,
-      release_date: movie.dataValues.release_date,
     });
 
     // create status seats

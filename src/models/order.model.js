@@ -22,6 +22,10 @@ export const OrderModel = DbService.sequelize.define(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     timestamps: false,

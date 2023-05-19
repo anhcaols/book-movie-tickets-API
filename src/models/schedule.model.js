@@ -27,10 +27,6 @@ export const ScheduleModel = DbService.sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
-    release_date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
   },
   {
     timestamps: false,

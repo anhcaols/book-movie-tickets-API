@@ -23,8 +23,13 @@ export const createRatingController = async (req, res, next) => {
       });
     }
 
-    await ratingsService.createRating(value);
-    res.json({ message: 'Create rating successfully', success: true });
+    const rating = await ratingsService.createRating(value);
+    const ownerReviewer = await accountsService.getAccountById(rating.dataValues.user_id);
+    res.json({
+      message: 'Create rating successfully',
+      rating: { ...rating.dataValues, user: ownerReviewer },
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

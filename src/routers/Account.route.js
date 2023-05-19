@@ -24,4 +24,4 @@ accountRouter.get('/accounts/info', authMiddleware(), getAccountByAccessTokenCon
 accountRouter.get('/accounts/:id', authMiddleware(), getUserByIdController);
 accountRouter.get('/accounts', authMiddlewareByAdmin(), getUsersController);
 accountRouter.delete('/accounts/:id', authMiddlewareByAdmin(), deleteUserController);
-accountRouter.patch('/accounts/:id', authMiddlewareByAdmin(), updateUserController);
+accountRouter.patch('/accounts/:id', authMiddleware(), updateUserController);
