@@ -1,4 +1,5 @@
 import { OrderModel } from '../models/order.model.js';
+import { Sequelize } from 'sequelize';
 
 export class OrderService {
   async getOrderById(orderId) {
@@ -6,7 +7,6 @@ export class OrderService {
   }
 
   async getAllOrdersByUser(offset, limit, userId) {
-    console.log(userId);
     if (userId === 'all') {
       return await OrderModel.findAll({ offset, limit, order: [['id', 'DESC']] });
     } else {
@@ -19,6 +19,31 @@ export class OrderService {
         },
       });
     }
+  }
+
+  async getReportRevenue(model) {
+    let startDate, endDate;
+
+    if (model >= 1 && model <= 12) {
+      // Truy vấn theo tháng
+      const currentYear = new Date().getFullYear();
+      startDate = new Date(currentYear, model - 1, 1);
+      endDate = new Date(currentYear, model, 0);
+    } else if (model >= 1000 && model <= 9999) {
+      // Truy vấn theo năm
+      startDate = new Date(model, 0, 1);
+      endDate = new Date(model, 11, 31);
+    } else {
+      throw new Error('Invalid model value. Model should be a month (1-12) or a year (1000-9999).');
+    }
+
+    return await OrderModel.findAll({
+      where: {
+        order_date: {
+          [Sequelize.Op.between]: [startDate, endDate],
+        },
+      },
+    });
   }
 
   async getOrderCountsByUser(userId) {

@@ -1,4 +1,4 @@
-import { OrderSchema } from '../dto/order.js';
+import { OrderSchema, ReportRevenue } from '../dto/order.js';
 import { ordersService } from '../services/order.service.js';
 import { schedulesService } from '../services/schedule.service.js';
 import { seatTypesService } from '../services/seat-type.service.js';
@@ -236,6 +236,21 @@ export const getUserOrdersController = async (req, res, next) => {
       },
       success: true,
     });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getReportRevenue = async (req, res, next) => {
+  try {
+    const { model } = req.query;
+    const reportRevenue = await ordersService.getReportRevenue(model);
+    let revenue = 0;
+    reportRevenue.map((item) => {
+      const demo = parseFloat(item.dataValues.total_amount);
+      revenue += demo;
+    });
+    res.json({ message: 'Get report revenue successfully', data: revenue, success: true });
   } catch (e) {
     next(e);
   }

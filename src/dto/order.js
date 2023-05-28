@@ -13,3 +13,7 @@ export const OrderSchema = Joi.object({
     )
     .default([]),
 });
+
+export const ReportRevenue = Joi.object({
+  model: Joi.string().valid('month', 'year'),
+});

@@ -21,7 +21,6 @@ export class ScheduleService {
   }
 
   async getAllSchedulesByMovie(movieId, dateTime) {
-    console.log(dateTime);
     return await ScheduleModel.findAll({
       where: {
         movie_id: movieId,
