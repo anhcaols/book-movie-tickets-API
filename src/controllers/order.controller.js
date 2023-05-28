@@ -247,10 +247,27 @@ export const getReportRevenue = async (req, res, next) => {
     const reportRevenue = await ordersService.getReportRevenue(model);
     let revenue = 0;
     reportRevenue.map((item) => {
-      const demo = parseFloat(item.dataValues.total_amount);
-      revenue += demo;
+      const totalAmount = parseFloat(item.dataValues.total_amount);
+      revenue += totalAmount;
     });
     res.json({ message: 'Get report revenue successfully', data: revenue, success: true });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getTicketByMonth = async (req, res, next) => {
+  try {
+    const { model } = req.query;
+    const reportRevenue = await ordersService.getReportRevenue(model);
+    const data = await Promise.all(
+      reportRevenue.map(async (item) => {
+        const tickets = await ticketsService.getAllTicketsByOrderId(item.dataValues.id);
+        return tickets.map((ticket) => ticket.dataValues);
+      })
+    );
+
+    res.json({ message: 'Get ticket by month successfully', data: data.length, success: true });
   } catch (e) {
     next(e);
   }
