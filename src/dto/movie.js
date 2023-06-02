@@ -14,7 +14,7 @@ export const MovieSchema = Joi.object({
   status: Joi.string().required(),
   age: Joi.number().required(),
   image: Joi.string(),
-  trailer: Joi.string(),
+  trailer: Joi.any().optional(),
 });
 
 export const MovieSearchSchema = Joi.object({
