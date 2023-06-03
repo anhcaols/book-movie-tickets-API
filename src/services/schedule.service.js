@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { ScheduleModel } from '../models/schedule.model.js';
 import { DbService } from './db-service.js';
 
@@ -11,12 +11,16 @@ export class ScheduleService {
     return await ScheduleModel.findByPk(scheduleId);
   }
 
-  async getAllSchedules(offset, limit, condition) {
+  async getAllSchedules(offset, limit, dateTime) {
     return await ScheduleModel.findAll({
       offset,
       limit,
       order: [['id', 'DESC']],
-      where: condition,
+      where: dateTime && {
+        start_time: {
+          [Op.gte]: Sequelize.literal(`DATE('${dateTime}')`),
+        },
+      },
     });
   }
 

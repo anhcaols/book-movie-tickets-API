@@ -107,9 +107,11 @@ export const createScheduleController = async (req, res, next) => {
 
 export const getAllScheduleController = async (req, res, next) => {
   try {
+    const { dateTime } = req.query;
+
     const totalDocs = await schedulesService.getScheduleCount();
     const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
-    const schedules = await schedulesService.getAllSchedules(offset, limit);
+    const schedules = await schedulesService.getAllSchedules(offset, limit, dateTime && dateTime);
 
     const data = await Promise.all(
       schedules.map(async (schedule) => {
