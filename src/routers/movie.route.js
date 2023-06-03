@@ -4,6 +4,7 @@ import {
   createMovieController,
   deleteMovieController,
   getComingSoonMoviesController,
+  getMovieByIdController,
   getMovieController,
   getMoviesController,
   getNowShowingMoviesController,
@@ -29,6 +30,7 @@ movieRouter.get('/movies', getMoviesController);
 movieRouter.get('/movies/now-showing', getNowShowingMoviesController);
 movieRouter.get('/movies/coming-soon', getComingSoonMoviesController);
 movieRouter.get('/movies/:slug', getMovieController);
+movieRouter.get('/movies/id/:id', getMovieByIdController);
 
 movieRouter.post('/movies/search', searchMovieController);
 movieRouter.post('/movies', authMiddlewareByAdmin(), upload.single('image'), createMovieController);

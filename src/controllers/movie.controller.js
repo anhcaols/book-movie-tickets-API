@@ -327,6 +327,43 @@ export const getMovieController = async (req, res, next) => {
   }
 };
 
+export const getMovieByIdController = async (req, res, next) => {
+  const id = req.params.id;
+
+  const movie = await moviesService.getMovieById(id);
+  if (!movie) {
+    return res.status(404).json({
+      message: 'Movie does not found',
+      status: 404,
+    });
+  }
+
+  const movieGenres = await movieGenreServiceService.getMovieGenreById(movie.dataValues.id);
+  const genres = await Promise.all(
+    movieGenres.map(async (movieGenre) => {
+      const genre = await genresService.getGenreById(movieGenre.dataValues.genre_id);
+      return genre;
+    })
+  );
+  const movieId = movie.dataValues.id;
+  const scoreRate = await handleGetScoreRate(movieId);
+  const newMovie = handleNewMovie(movie);
+
+  try {
+    res.json({
+      message: 'Get coming soon movies successfully',
+      movie: {
+        ...newMovie,
+        genres,
+        scoreRate,
+      },
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const searchMovieController = async (req, res, next) => {
   try {
     const { error, value } = MovieSearchSchema.validate(req.body);
