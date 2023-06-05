@@ -2,7 +2,12 @@ import { accountsService } from '../services/account.service.js';
 import { hashPassword, verifyPassword } from '../utils/password.js';
 import { generateToken } from '../utils/jwt.js';
 import { Role } from '../enums/auth.enum.js';
-import { LoginAccountSchema, RegisterAccountSchema, UpdateAccountSchema } from '../dto/account.js';
+import {
+  ChangePasswordSchema,
+  LoginAccountSchema,
+  RegisterAccountSchema,
+  UpdateAccountSchema,
+} from '../dto/account.js';
 import { ApiError } from '../api-error.js';
 import httpStatus from 'http-status';
 import { utils } from '../utils/index.js';
@@ -122,7 +127,7 @@ export const loginAccountByAdminController = async (req, res, next) => {
     const isEqual = await verifyPassword(value.password, account.password);
     if (!isEqual) {
       return res.status(400).json({
-        message: 'Password does not match',
+        message: 'Incorrect password',
         status: 400,
       });
     }
@@ -320,6 +325,47 @@ export const updateUserController = async (req, res, next) => {
 export const uploadAvatarController = async (req, res, next) => {
   try {
     res.send('File uploaded successfully!');
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const changePasswordController = async (req, res, next) => {
+  try {
+    const { error, value } = ChangePasswordSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.message,
+        status: 400,
+      });
+    }
+
+    const email = req.user.dataValues.email;
+    const userId = req.user.dataValues.id;
+    const { old_password, new_password } = value;
+
+    const account = await accountsService.getAccountByEmail(email);
+    if (!account) {
+      return res.status(404).json({
+        message: 'Account does not found',
+        status: 404,
+      });
+    }
+    const isEqual = await verifyPassword(old_password, account.password);
+    if (!isEqual) {
+      return res.status(400).json({
+        message: 'Incorrect password',
+        status: 400,
+      });
+    }
+
+    const newPassword = await hashPassword(new_password);
+    await accountsService.updateUser({ password: newPassword }, userId);
+
+    res.json({
+      message: 'Change password successfully',
+      success: true,
+    });
   } catch (e) {
     next(e);
   }

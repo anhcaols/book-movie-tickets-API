@@ -11,6 +11,7 @@ import {
   deleteUserController,
   updateUserController,
   getUserByIdController,
+  changePasswordController,
 } from '../controllers/account.controller.js';
 import { authMiddleware, authMiddlewareByAdmin } from '../middlewares/auth.middleware.js';
 
@@ -25,3 +26,4 @@ accountRouter.get('/accounts/:id', authMiddleware(), getUserByIdController);
 accountRouter.get('/accounts', authMiddlewareByAdmin(), getUsersController);
 accountRouter.delete('/accounts/:id', authMiddlewareByAdmin(), deleteUserController);
 accountRouter.patch('/accounts/:id', authMiddleware(), updateUserController);
+accountRouter.post('/accounts/change_password', authMiddleware(), changePasswordController);

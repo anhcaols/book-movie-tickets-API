@@ -28,3 +28,9 @@ export const UpdateAccountSchema = Joi.object({
   date_of_birth: Joi.string().allow(null),
   gender: Joi.string().allow(null),
 });
+
+export const ChangePasswordSchema = Joi.object({
+  old_password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+  confirm_old_password: Joi.ref('old_password'),
+  new_password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+});
