@@ -12,16 +12,27 @@ export class ScheduleService {
   }
 
   async getAllSchedules(offset, limit, dateTime) {
-    return await ScheduleModel.findAll({
-      offset,
-      limit,
-      order: [['id', 'DESC']],
-      where: dateTime && {
-        start_time: {
-          [Op.gte]: Sequelize.literal(`DATE('${dateTime}')`),
+    if (dateTime) {
+      const [year, month, day] = dateTime.split('-');
+      const startDate = Sequelize.fn('date', Sequelize.literal(`'${year}-${month}-${day}'`));
+
+      return await ScheduleModel.findAll({
+        offset,
+        limit,
+        order: [['id', 'DESC']],
+        where: dateTime && {
+          start_time: {
+            [Op.gte]: startDate,
+          },
         },
-      },
-    });
+      });
+    } else {
+      return await ScheduleModel.findAll({
+        offset,
+        limit,
+        order: [['id', 'DESC']],
+      });
+    }
   }
 
   async getAllSchedulesByMovie(movieId, dateTime) {
