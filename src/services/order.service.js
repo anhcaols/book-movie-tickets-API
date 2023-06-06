@@ -1,23 +1,54 @@
 import { OrderModel } from '../models/order.model.js';
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 
 export class OrderService {
   async getOrderById(orderId) {
     return await OrderModel.findByPk(orderId);
   }
 
-  async getAllOrdersByUser(offset, limit, userId) {
-    if (userId === 'all') {
-      return await OrderModel.findAll({ offset, limit, order: [['id', 'DESC']] });
+  async getAllOrdersByUser(offset, limit, userId, dateTime) {
+    if (dateTime) {
+      const dateStart = new Date(dateTime); // Tạo một đối tượng ngày từ dateTime
+      const dateEnd = new Date(dateTime); // Tạo một đối tượng ngày từ dateTime
+      dateEnd.setDate(dateEnd.getDate() + 1);
+
+      if (userId === 'all') {
+        return await OrderModel.findAll({
+          offset,
+          limit,
+          order: [['id', 'DESC']],
+          where: {
+            order_date: {
+              [Op.between]: [dateStart, dateEnd],
+            },
+          },
+        });
+      } else {
+        return await OrderModel.findAll({
+          offset,
+          limit,
+          order: [['id', 'DESC']],
+          where: {
+            user_id: userId,
+            order_date: {
+              [Op.between]: [dateStart, dateEnd],
+            },
+          },
+        });
+      }
     } else {
-      return await OrderModel.findAll({
-        offset,
-        limit,
-        order: [['id', 'DESC']],
-        where: {
-          user_id: userId,
-        },
-      });
+      if (userId === 'all') {
+        return await OrderModel.findAll({ offset, limit, order: [['id', 'DESC']] });
+      } else {
+        return await OrderModel.findAll({
+          offset,
+          limit,
+          order: [['id', 'DESC']],
+          where: {
+            user_id: userId,
+          },
+        });
+      }
     }
   }
 
@@ -46,13 +77,38 @@ export class OrderService {
     });
   }
 
-  async getOrderCountsByUser(userId) {
-    if (userId === 'all') {
-      return await OrderModel.count();
+  async getOrderCountsByUser(userId, dateTime) {
+    if (dateTime) {
+      const dateStart = new Date(dateTime); // Tạo một đối tượng ngày từ dateTime
+      const dateEnd = new Date(dateTime); // Tạo một đối tượng ngày từ dateTime
+      dateEnd.setDate(dateEnd.getDate() + 1);
+
+      if (userId === 'all') {
+        return await OrderModel.count({
+          where: {
+            order_date: {
+              [Op.between]: [dateStart, dateEnd],
+            },
+          },
+        });
+      } else {
+        return await OrderModel.count({
+          where: {
+            user_id: userId,
+            order_date: {
+              [Op.between]: [dateStart, dateEnd],
+            },
+          },
+        });
+      }
     } else {
-      return await OrderModel.count({
-        where: { user_id: userId },
-      });
+      if (userId === 'all') {
+        return await OrderModel.count();
+      } else {
+        return await OrderModel.count({
+          where: { user_id: userId },
+        });
+      }
     }
   }
 

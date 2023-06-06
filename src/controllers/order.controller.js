@@ -145,6 +145,7 @@ export const deleteOrderController = async (req, res, next) => {
 export const getUserOrdersController = async (req, res, next) => {
   try {
     const userId = req.params.id;
+    const { dateTime } = req.query;
     if (userId !== 'all') {
       const account = await accountsService.getAccountById(userId);
       if (!account) {
@@ -155,10 +156,10 @@ export const getUserOrdersController = async (req, res, next) => {
       }
     }
 
-    const totalDocs = await ordersService.getOrderCountsByUser(userId);
+    const totalDocs = await ordersService.getOrderCountsByUser(userId, dateTime && dateTime);
     const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
 
-    const orders = await ordersService.getAllOrdersByUser(offset, limit, userId);
+    const orders = await ordersService.getAllOrdersByUser(offset, limit, userId, dateTime && dateTime);
     const data = await Promise.all(
       orders.map(async (order) => {
         const account = await accountsService.getAccountById(order.dataValues.user_id);
