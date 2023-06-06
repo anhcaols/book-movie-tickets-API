@@ -107,11 +107,11 @@ export const createScheduleController = async (req, res, next) => {
 
 export const getAllScheduleController = async (req, res, next) => {
   try {
-    const { dateTime } = req.query;
+    const { dateTime, movieId } = req.query;
 
-    const totalDocs = await schedulesService.getScheduleCount();
+    const totalDocs = await schedulesService.getScheduleCount(dateTime && dateTime, movieId && movieId);
     const { offset, limit, page, totalPages, hasNextPage, hasPrevPage } = await utils.pagination(req, totalDocs);
-    const schedules = await schedulesService.getAllSchedules(offset, limit, dateTime && dateTime);
+    const schedules = await schedulesService.getAllSchedules(offset, limit, dateTime && dateTime, movieId && movieId);
 
     const data = await Promise.all(
       schedules.map(async (schedule) => {

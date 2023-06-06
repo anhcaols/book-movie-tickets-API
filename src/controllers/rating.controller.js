@@ -27,7 +27,16 @@ export const createRatingController = async (req, res, next) => {
     const ownerReviewer = await accountsService.getAccountById(rating.dataValues.user_id);
     res.json({
       message: 'Create rating successfully',
-      rating: { ...rating.dataValues, user: ownerReviewer },
+      rating: {
+        ...rating.dataValues,
+        user: {
+          id: ownerReviewer.dataValues.id,
+          fullName: ownerReviewer.dataValues.full_name,
+          avatar: ownerReviewer.dataValues.avatar,
+          email: ownerReviewer.dataValues.email,
+          role: ownerReviewer.dataValues.role,
+        },
+      },
       success: true,
     });
   } catch (e) {

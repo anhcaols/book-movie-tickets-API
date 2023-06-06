@@ -11,21 +11,35 @@ export class ScheduleService {
     return await ScheduleModel.findByPk(scheduleId);
   }
 
-  async getAllSchedules(offset, limit, dateTime) {
+  async getAllSchedules(offset, limit, dateTime, movieId) {
     if (dateTime) {
       const [year, month, day] = dateTime.split('-');
       const startDate = Sequelize.fn('date', Sequelize.literal(`'${year}-${month}-${day}'`));
 
-      return await ScheduleModel.findAll({
-        offset,
-        limit,
-        order: [['id', 'DESC']],
-        where: dateTime && {
-          start_time: {
-            [Op.gte]: startDate,
+      if (movieId) {
+        return await ScheduleModel.findAll({
+          offset,
+          limit,
+          order: [['id', 'DESC']],
+          where: {
+            start_time: {
+              [Op.gte]: startDate,
+            },
+            movie_id: movieId,
           },
-        },
-      });
+        });
+      } else {
+        return await ScheduleModel.findAll({
+          offset,
+          limit,
+          order: [['id', 'DESC']],
+          where: dateTime && {
+            start_time: {
+              [Op.gte]: startDate,
+            },
+          },
+        });
+      }
     } else {
       return await ScheduleModel.findAll({
         offset,
@@ -47,10 +61,32 @@ export class ScheduleService {
     });
   }
 
-  async getScheduleCount(condition) {
-    return await ScheduleModel.count({
-      where: condition,
-    });
+  async getScheduleCount(dateTime, movieId) {
+    if (dateTime) {
+      const [year, month, day] = dateTime.split('-');
+      const startDate = Sequelize.fn('date', Sequelize.literal(`'${year}-${month}-${day}'`));
+
+      if (movieId) {
+        return await ScheduleModel.count({
+          where: {
+            start_time: {
+              [Op.gte]: startDate,
+            },
+            movie_id: movieId,
+          },
+        });
+      } else {
+        return await ScheduleModel.count({
+          where: {
+            start_time: {
+              [Op.gte]: startDate,
+            },
+          },
+        });
+      }
+    } else {
+      return await ScheduleModel.count();
+    }
   }
 
   async createSchedule(schedule) {
