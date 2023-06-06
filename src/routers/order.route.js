@@ -6,6 +6,7 @@ import {
   createOrderController,
   deleteOrderController,
   getReportRevenue,
+  getRevenueByMonth,
   getTicketByMonth,
   getUserOrdersController,
 } from '../controllers/order.controller.js';
@@ -17,3 +18,4 @@ orderRouter.delete('/orders/:id', authMiddleware(), deleteOrderController);
 orderRouter.get('/user-orders/:id', authMiddleware(), getUserOrdersController);
 orderRouter.get('/orders/report-revenue', authMiddlewareByAdmin(), getReportRevenue);
 orderRouter.get('/orders/ticket', authMiddlewareByAdmin(), getTicketByMonth);
+orderRouter.get('/orders/revenue-month', authMiddlewareByAdmin(), getRevenueByMonth);

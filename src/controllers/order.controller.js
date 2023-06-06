@@ -273,3 +273,23 @@ export const getTicketByMonth = async (req, res, next) => {
     next(e);
   }
 };
+
+export const getRevenueByMonth = async (req, res, next) => {
+  try {
+    const labels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const revenueByMonth = await ordersService.getRevenueByMonth();
+    console.log(revenueByMonth);
+    const formattedData = labels.map((month) => {
+      const revenueItem = revenueByMonth.find((item) => item.month === month);
+      console.log(revenueItem);
+      const total = revenueItem ? parseFloat(revenueItem.total) : 0;
+      return {
+        month,
+        total,
+      };
+    });
+    res.json({ message: 'Get revenue by month successfully', data: formattedData, success: true });
+  } catch (e) {
+    next(e);
+  }
+};

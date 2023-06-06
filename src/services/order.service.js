@@ -1,9 +1,21 @@
 import { OrderModel } from '../models/order.model.js';
 import { Op, Sequelize } from 'sequelize';
+import { DbService } from './db-service.js';
 
 export class OrderService {
   async getOrderById(orderId) {
     return await OrderModel.findByPk(orderId);
+  }
+
+  async getRevenueByMonth() {
+    return await OrderModel.findAll({
+      attributes: [
+        [DbService.sequelize.fn('MONTH', DbService.sequelize.col('order_date')), 'month'],
+        [DbService.sequelize.fn('SUM', DbService.sequelize.col('total_amount')), 'total'],
+      ],
+      group: ['month'],
+      raw: true,
+    });
   }
 
   async getAllOrdersByUser(offset, limit, userId, dateTime) {
