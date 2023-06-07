@@ -13,8 +13,9 @@ export class ScheduleService {
 
   async getAllSchedules(offset, limit, dateTime, movieId) {
     if (dateTime) {
-      const [year, month, day] = dateTime.split('-');
-      const startDate = Sequelize.fn('date', Sequelize.literal(`'${year}-${month}-${day}'`));
+      const dateStart = new Date(dateTime); // Tạo một đối tượng ngày từ dateTime
+      const dateEnd = new Date(dateTime); // Tạo một đối tượng ngày từ dateTime
+      dateEnd.setDate(dateEnd.getDate() + 1);
 
       if (movieId) {
         return await ScheduleModel.findAll({
@@ -23,7 +24,7 @@ export class ScheduleService {
           order: [['id', 'DESC']],
           where: {
             start_time: {
-              [Op.gte]: startDate,
+              [Op.between]: [dateStart, dateEnd],
             },
             movie_id: movieId,
           },
@@ -35,7 +36,7 @@ export class ScheduleService {
           order: [['id', 'DESC']],
           where: dateTime && {
             start_time: {
-              [Op.gte]: startDate,
+              [Op.between]: [dateStart, dateEnd],
             },
           },
         });
@@ -63,14 +64,15 @@ export class ScheduleService {
 
   async getScheduleCount(dateTime, movieId) {
     if (dateTime) {
-      const [year, month, day] = dateTime.split('-');
-      const startDate = Sequelize.fn('date', Sequelize.literal(`'${year}-${month}-${day}'`));
+      const dateStart = new Date(dateTime); // Tạo một đối tượng ngày từ dateTime
+      const dateEnd = new Date(dateTime); // Tạo một đối tượng ngày từ dateTime
+      dateEnd.setDate(dateEnd.getDate() + 1);
 
       if (movieId) {
         return await ScheduleModel.count({
           where: {
             start_time: {
-              [Op.gte]: startDate,
+              [Op.between]: [dateStart, dateEnd],
             },
             movie_id: movieId,
           },
@@ -79,7 +81,7 @@ export class ScheduleService {
         return await ScheduleModel.count({
           where: {
             start_time: {
-              [Op.gte]: startDate,
+              [Op.between]: [dateStart, dateEnd],
             },
           },
         });
