@@ -7,12 +7,13 @@ export class OrderService {
     return await OrderModel.findByPk(orderId);
   }
 
-  async getRevenueByMonth() {
+  async getRevenueByMonth(year) {
     return await OrderModel.findAll({
       attributes: [
         [DbService.sequelize.fn('MONTH', DbService.sequelize.col('order_date')), 'month'],
         [DbService.sequelize.fn('SUM', DbService.sequelize.col('total_amount')), 'total'],
       ],
+      where: DbService.sequelize.where(DbService.sequelize.fn('YEAR', DbService.sequelize.col('order_date')), year),
       group: ['month'],
       raw: true,
     });

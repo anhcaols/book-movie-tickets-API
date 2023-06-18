@@ -18,4 +18,4 @@ orderRouter.delete('/orders/:id', authMiddleware(), deleteOrderController);
 orderRouter.get('/user-orders/:id', authMiddleware(), getUserOrdersController);
 orderRouter.get('/orders/report-revenue', authMiddlewareByAdmin(), getReportRevenue);
 orderRouter.get('/orders/ticket', authMiddlewareByAdmin(), getTicketByMonth);
-orderRouter.get('/orders/revenue-month', authMiddlewareByAdmin(), getRevenueByMonth);
+orderRouter.get('/orders/revenue-month/:year', authMiddlewareByAdmin(), getRevenueByMonth);
