@@ -4,6 +4,7 @@ export const OrderSchema = Joi.object({
   user_id: Joi.number().required(),
   seats: Joi.array().items(Joi.number()).required(),
   schedule_id: Joi.number().required(),
+  discount: Joi.number().default([]),
   foods: Joi.array()
     .items(
       Joi.object({

@@ -16,6 +16,12 @@ export class Utils {
       hasPrevPage,
     };
   }
+
+  async isWeekend(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDay();
+    return day === 6 || day === 0;
+  }
 }
 
 export const utils = new Utils();

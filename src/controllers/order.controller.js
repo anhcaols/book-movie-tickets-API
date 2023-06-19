@@ -27,6 +27,7 @@ export const createOrderController = async (req, res, next) => {
     const seatIds = value.seats;
     const scheduleId = value.schedule_id;
     const foods = value.foods;
+    const discount = value.discount;
 
     for (const seatId of seatIds) {
       const statusSeat = await statusSeatsService.getStatusSeat(seatId, scheduleId);
@@ -46,6 +47,9 @@ export const createOrderController = async (req, res, next) => {
       });
     }
 
+    const isCheckWeekend = await utils.isWeekend(schedule.dataValues.start_time);
+    console.log('isCheckWeekend============', isCheckWeekend);
+
     const dateNow = moment().tz('Asia/Ho_Chi_Minh').format();
     const order = await ordersService.createOrder({
       user_id: userId,
@@ -61,8 +65,16 @@ export const createOrderController = async (req, res, next) => {
       const seat = await seatsService.getSeatById(seatId);
       const seatTypeId = seat.dataValues.seat_type_id;
       const seatType = await seatTypesService.getSeatType(seatTypeId);
-      const ticketPrice = parseFloat(seatType.dataValues.price);
-      totalTicketPrice += ticketPrice;
+
+      if (isCheckWeekend) {
+        const ticketPrice = parseFloat(seatType.dataValues.price);
+        totalTicketPrice += ticketPrice;
+      } else {
+        const priceDiscount = (discount / 100) * parseFloat(seatType.dataValues.price);
+        const ticketPrice = parseFloat(seatType.dataValues.price) - priceDiscount;
+        totalTicketPrice += ticketPrice;
+      }
+
       tickets.push({
         seat_id: seatId,
         schedule_id: scheduleId,
